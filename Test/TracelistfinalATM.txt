@@ -1,0 +1,44 @@
+1
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing) -Blackbox(Attacker, Atm1)-> 
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling[c(Attacker, Atm1) -> true],is_stealing) -StealingMoney(Attacker, Atm1)-> 
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling[c(Attacker, Atm1) -> true],is_stealing[s(Attacker) -> true]) -final-> 
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling[c(Attacker, Atm1) -> true],is_stealing[s(Attacker) -> true])
+2
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing) -Cardtrapping(Customer, Attacker, Atm1, Card1)-> 
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Attacker, Card1) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing) -RamRaid(Attacker, Atm1)-> 
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Attacker, Card1) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed[d(Atm1) -> true],is_controlling,is_stealing) -StealingMoney(Attacker, Atm1)-> 
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Attacker, Card1) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed[d(Atm1) -> true],is_controlling,is_stealing[s(Attacker) -> true]) -final-> 
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Attacker, Card1) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed[d(Atm1) -> true],is_controlling,is_stealing[s(Attacker) -> true])
+3
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing) -Cardtrapping(Employee, Attacker, Atm1, Card1)-> 
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Attacker, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing) -StealingMoney(Attacker, Atm1)-> 
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Attacker, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing[s(Attacker) -> true]) -Cardskimming(Attacker, Customer, Atm1, Card1, Card2)-> 
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Attacker, Card1) -> true],validCard_tuple[v(Card2) -> true][v(Card1) -> true],is_destroyed,is_controlling,is_stealing[s(Attacker) -> true]) -final-> 
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Attacker, Card1) -> true],validCard_tuple[v(Card2) -> true][v(Card1) -> true],is_destroyed,is_controlling,is_stealing[s(Attacker) -> true])
+4
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing) -Cardtrapping(Employee, Attacker, Atm1, Card1)-> 
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Attacker, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing) -RamRaid(Attacker, Atm1)-> 
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Attacker, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed[d(Atm1) -> true],is_controlling,is_stealing) -StealingMoney(Attacker, Atm1)-> 
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Attacker, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed[d(Atm1) -> true],is_controlling,is_stealing[s(Attacker) -> true]) -final-> 
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Attacker, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed[d(Atm1) -> true],is_controlling,is_stealing[s(Attacker) -> true])
+5
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing) -Cardskimming(Attacker, Customer, Atm1, Card1, Card2)-> 
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card2) -> true][v(Card1) -> true],is_destroyed,is_controlling,is_stealing) -RamRaid(Attacker, Atm1)-> 
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card2) -> true][v(Card1) -> true],is_destroyed[d(Atm1) -> true],is_controlling,is_stealing) -StealingMoney(Attacker, Atm1)-> 
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card2) -> true][v(Card1) -> true],is_destroyed[d(Atm1) -> true],is_controlling,is_stealing[s(Attacker) -> true]) -final-> 
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card2) -> true][v(Card1) -> true],is_destroyed[d(Atm1) -> true],is_controlling,is_stealing[s(Attacker) -> true])
+6
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing) -RamRaid(Attacker, Atm1)->
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed[d(Atm1) -> true],is_controlling,is_stealing) -StealingMoney(Attacker, Atm1)->
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed[d(Atm1) -> true],is_controlling,is_stealing[s(Attacker) -> true]) -final->
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed[d(Atm1) -> true],is_controlling,is_stealing[s(Attacker) -> true])
+7
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing) -MalwareNetwork(Attacker, Atm1, AtmNetwork)->
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling[c(Attacker, Atm1) -> true],is_stealing) -StealingMoney(Attacker, Atm1)->
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling[c(Attacker, Atm1) -> true],is_stealing[s(Attacker) -> true]) -final->
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling[c(Attacker, Atm1) -> true],is_stealing[s(Attacker) -> true])
+8
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing) -MalwarePC(Attacker, Atm1, AtmPC)->
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling[c(Attacker, Atm1) -> true],is_stealing) -StealingMoney(Attacker, Atm1)->
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling[c(Attacker, Atm1) -> true],is_stealing[s(Attacker) -> true]) -final->
+(owningCard_tuple[o(Attacker, Card2) -> true][o(Employee, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling[c(Attacker, Atm1) -> true],is_stealing[s(Attacker) -> true])

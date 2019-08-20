@@ -1,0 +1,42 @@
+body h1{
+    margin:auto;
+    width:50%;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    color: darkred;
+    text-align: center;
+
+}
+#mcrl-input {
+    border-top: darkred solid thick;
+    font-family: Verdana;
+}
+
+.content_area {
+    width:80%;
+    margin: auto;
+    padding: 10px;
+    border-radius: 20px;
+    background: #e6f7f5;
+    box-shadow: 10px 10px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#specification_form {
+    width: 90%;
+    margin: auto;
+    margin-top:1%;
+}
+
+#specification_form textarea{
+    width: 100%;
+}
+
+#specification_form input[type=submit], #try-again {
+    background: darkred;
+    color:white;
+    font-family: Verdana;
+}
+
+body {
+    background: #DDD;
+
+}

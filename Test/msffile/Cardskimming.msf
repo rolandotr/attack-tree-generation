@@ -1,0 +1,1 @@
+<true*. exists A0,A1:Actors,B0:ATM,C0,C1:Card. Cardskimming(A0,A1,B0,C0,C1). true*. final>true

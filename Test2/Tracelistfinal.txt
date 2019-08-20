@@ -1,0 +1,15 @@
+1
+(init_located[l(Mallory, Client) -> true][l(Alice, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Alice, psw1) -> true]) -eavesdropping(Alice, Mallory, Client, Server, psw1)-> 
+(init_located[l(Mallory, Client) -> true][l(Alice, Server) -> true][l(Alice, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Mallory, psw1) -> true][k(Alice, psw1) -> true]) -loggingInRem(Mallory, Client, Server, psw1)-> 
+(init_located[l(Mallory, Server) -> true][l(Mallory, Client) -> true][l(Alice, Server) -> true][l(Alice, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Mallory, psw1) -> true][k(Alice, psw1) -> true]) -final-> 
+(init_located[l(Mallory, Server) -> true][l(Mallory, Client) -> true][l(Alice, Server) -> true][l(Alice, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Mallory, psw1) -> true][k(Alice, psw1) -> true])
+2
+(init_located[l(Mallory, Client) -> true][l(Alice, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Alice, psw1) -> true]) -bruteforcingPsw(Mallory, Client, Server, psw1)-> 
+(init_located[l(Mallory, Client) -> true][l(Alice, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Mallory, psw1) -> true][k(Alice, psw1) -> true]) -loggingInRem(Mallory, Client, Server, psw1)-> 
+(init_located[l(Mallory, Server) -> true][l(Mallory, Client) -> true][l(Alice, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Mallory, psw1) -> true][k(Alice, psw1) -> true]) -final-> 
+(init_located[l(Mallory, Server) -> true][l(Mallory, Client) -> true][l(Alice, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Mallory, psw1) -> true][k(Alice, psw1) -> true])
+3
+(init_located[l(Mallory, Client) -> true][l(Alice, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Alice, psw1) -> true]) -exploiting(Mallory, Client, Server, psw2)-> 
+(init_located[l(Mallory, Client) -> true][l(Alice, Client) -> true],init_stores[s(Server, psw2) -> true][s(Server, psw1) -> true],init_knows[k(Mallory, psw2) -> true][k(Alice, psw1) -> true]) -loggingInRem(Mallory, Client, Server, psw2)-> 
+(init_located[l(Mallory, Server) -> true][l(Mallory, Client) -> true][l(Alice, Client) -> true],init_stores[s(Server, psw2) -> true][s(Server, psw1) -> true],init_knows[k(Mallory, psw2) -> true][k(Alice, psw1) -> true]) -final-> 
+(init_located[l(Mallory, Server) -> true][l(Mallory, Client) -> true][l(Alice, Client) -> true],init_stores[s(Server, psw2) -> true][s(Server, psw1) -> true],init_knows[k(Mallory, psw2) -> true][k(Alice, psw1) -> true])

@@ -1,0 +1,19 @@
+// Opt Tree
+digraph {
+	Eps1 [label="ε" xlabel="{Ø,{[] , [{'init_knows': \"['Mallory,', 'Cred']\"}, {'init_located': \"['Mallory,', 'Server']\"}]})"]
+	Eps2 [label="ε" xlabel="(Ø,{[] , [{'init_knows': \"['Mallory,', 'Cred']\"}]})"]
+	eavesdropping [label=eavesdropping xlabel=""]
+	Eps2 -> eavesdropping
+	bruteforcingPsw [label=bruteforcingPsw xlabel=""]
+	Eps2 -> bruteforcingPsw
+	exploiting [label=exploiting xlabel=""]
+	Eps2 -> exploiting
+	"SAND1,0" [label="" shape=point]
+	Eps1 -> "SAND1,0" [arrowhead=none]
+	"SAND1,0" -> Eps2
+	"SAND1,0" -> "SAND1,1" [arrowhead=none constraint=false]
+	loggingInRem [label=loggingInRem xlabel=""]
+	"SAND1,1" [label="" shape=point]
+	Eps1 -> "SAND1,1" [arrowhead=none]
+	"SAND1,1" -> loggingInRem
+}

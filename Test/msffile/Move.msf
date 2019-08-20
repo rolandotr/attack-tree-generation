@@ -1,0 +1,1 @@
+<true*. exists A0:Actors,B0,B1:Location. Move(A0,B0,B1). true*. final>true

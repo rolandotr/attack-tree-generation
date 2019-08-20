@@ -1,0 +1,55 @@
+// Bin Tree
+digraph {
+	Eps1 [label="ε" xlabel="{Ø,{[] , [{'is_stealing': \"['Attacker']\"}]})"]
+	Eps2 [label="ε" xlabel="(Ø,{[] , []})"]
+	MalwareNetwork [label=MalwareNetwork xlabel=""]
+	Eps2 -> MalwareNetwork
+	Eps3 [label="ε" xlabel="(Ø,{[] , []})"]
+	Explosion [label=Explosion xlabel=""]
+	Eps3 -> Explosion
+	Eps4 [label="ε" xlabel="(Ø,{[] , []})"]
+	RamRaid [label=RamRaid xlabel=""]
+	Eps4 -> RamRaid
+	Eps5 [label="ε" xlabel="(Ø,{[] , []})"]
+	Blackbox [label=Blackbox xlabel=""]
+	Eps5 -> Blackbox
+	Eps6 [label="ε" xlabel="(Ø,{[] , []})"]
+	MalwarePC [label=MalwarePC xlabel=""]
+	Eps6 -> MalwarePC
+	Eps7 [label="ε" xlabel="{Ø,{[{'localisation_tuple': \"['Customer,', 'Home']\"}] , [{'localisation_tuple': \"['Customer,', 'Gazstation']\"}, {'is_withdrawing': \"['Customer,', 'Atm1']\"}]})"]
+	Move [label=Move xlabel=""]
+	"SAND7,0" [label="" shape=point]
+	Eps7 -> "SAND7,0" [arrowhead=none]
+	"SAND7,0" -> Move
+	"SAND7,0" -> "SAND7,1" [arrowhead=none constraint=false]
+	Eps8 [label="ε" xlabel="{Ø,{[] , [{'is_withdrawing': \"['Customer,', 'Atm1']\"}]})"]
+	Withdrawmoney [label=Withdrawmoney xlabel=""]
+	"SAND8,0" [label="" shape=point]
+	Eps8 -> "SAND8,0" [arrowhead=none]
+	"SAND8,0" -> Withdrawmoney
+	"SAND8,0" -> "SAND8,1" [arrowhead=none constraint=false]
+	Eps9 [label="ε" xlabel="(Ø,{[] , []})"]
+	Cardtrapping [label=Cardtrapping xlabel=""]
+	Eps9 -> Cardtrapping
+	Cardskimming [label=Cardskimming xlabel=""]
+	Eps9 -> Cardskimming
+	"SAND8,1" [label="" shape=point]
+	Eps8 -> "SAND8,1" [arrowhead=none]
+	"SAND8,1" -> Eps9
+	"SAND7,1" [label="" shape=point]
+	Eps7 -> "SAND7,1" [arrowhead=none]
+	"SAND7,1" -> Eps8
+	Eps6 -> Eps7
+	Eps5 -> Eps6
+	Eps4 -> Eps5
+	Eps3 -> Eps4
+	Eps2 -> Eps3
+	"SAND1,0" [label="" shape=point]
+	Eps1 -> "SAND1,0" [arrowhead=none]
+	"SAND1,0" -> Eps2
+	"SAND1,0" -> "SAND1,1" [arrowhead=none constraint=false]
+	StealingMoney [label=StealingMoney xlabel=""]
+	"SAND1,1" [label="" shape=point]
+	Eps1 -> "SAND1,1" [arrowhead=none]
+	"SAND1,1" -> StealingMoney
+}

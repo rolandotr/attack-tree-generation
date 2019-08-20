@@ -1,0 +1,43 @@
+// Opt Tree
+digraph {
+	Eps1 [label="ε" xlabel="{Ø,{[] , [{'is_stealing': \"['Attacker']\"}]})"]
+	Eps2 [label="ε" xlabel="(Ø,{[] , []})"]
+	MalwareNetwork [label=MalwareNetwork xlabel=""]
+	Eps2 -> MalwareNetwork
+	Explosion [label=Explosion xlabel=""]
+	Eps2 -> Explosion
+	RamRaid [label=RamRaid xlabel=""]
+	Eps2 -> RamRaid
+	Blackbox [label=Blackbox xlabel=""]
+	Eps2 -> Blackbox
+	MalwarePC [label=MalwarePC xlabel=""]
+	Eps2 -> MalwarePC
+	Eps3 [label="ε" xlabel="{Ø,{[{'localisation_tuple': \"['Customer,', 'Home']\"}] , [{'localisation_tuple': \"['Customer,', 'Gazstation']\"}, {'is_withdrawing': \"['Customer,', 'Atm1']\"}]})"]
+	Move [label=Move xlabel=""]
+	"SAND3,0" [label="" shape=point]
+	Eps3 -> "SAND3,0" [arrowhead=none]
+	"SAND3,0" -> Move
+	"SAND3,0" -> "SAND3,1" [arrowhead=none constraint=false]
+	Withdrawmoney [label=Withdrawmoney xlabel=""]
+	"SAND3,1" [label="" shape=point]
+	Eps3 -> "SAND3,1" [arrowhead=none]
+	"SAND3,1" -> Withdrawmoney
+	"SAND3,1" -> "SAND3,2" [arrowhead=none constraint=false]
+	Eps4 [label="ε" xlabel="(Ø,{[] , []})"]
+	Cardtrapping [label=Cardtrapping xlabel=""]
+	Eps4 -> Cardtrapping
+	Cardskimming [label=Cardskimming xlabel=""]
+	Eps4 -> Cardskimming
+	"SAND3,2" [label="" shape=point]
+	Eps3 -> "SAND3,2" [arrowhead=none]
+	"SAND3,2" -> Eps4
+	Eps2 -> Eps3
+	"SAND1,0" [label="" shape=point]
+	Eps1 -> "SAND1,0" [arrowhead=none]
+	"SAND1,0" -> Eps2
+	"SAND1,0" -> "SAND1,1" [arrowhead=none constraint=false]
+	StealingMoney [label=StealingMoney xlabel=""]
+	"SAND1,1" [label="" shape=point]
+	Eps1 -> "SAND1,1" [arrowhead=none]
+	"SAND1,1" -> StealingMoney
+}
