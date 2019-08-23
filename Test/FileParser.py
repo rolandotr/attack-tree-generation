@@ -32,7 +32,7 @@ def generateTrace(aDict):
         print("first time Tracelist.txt is generated")
     os.mkdir('msffile') 
     os.chdir("msffile/")              
-
+    print("Creating Trace-generation Formula ") 
     i=65
     for action in aDict.keys():
         #to label the variable, we use letter of alphabet+ number of variable
@@ -90,6 +90,7 @@ def generateTrace(aDict):
         
     os.mkdir('lpsfile')
     output=[]
+    print("Solving Formula ")
     for element in fl:
         print('solving : ',element)
         print('pbessolve  -f '+'ATM.lps '+'pbesfile/'+element+' --evidence-file='+'lpsfile/'+element[:-4]+'lps')
@@ -98,7 +99,7 @@ def generateTrace(aDict):
     fl=os.listdir("lpsfile/") 
     print(fl)
 
-
+    print("Trace Generation")
     ##### trace generation like before but on lps containing evidences######
     try:
         shutil.rmtree("trcfiles/")
@@ -142,7 +143,7 @@ def generateTrace(aDict):
             Traceid+=1
             # print("we are here")
             f.writelines(str(Traceid)+ "\n"+element+"\n")   
-
+    print("Traces Generation Done ") 
 dot = Digraph(comment = 'Trace generated attack Tree')
 
 
@@ -496,8 +497,9 @@ def buildtree(Filename):
     pilist=convertListSeq(pilist)
     
     ### tree generation ###
+    print("Building Tree" )
     btree=genbintree(pilist,P)
-    
+    print("Tree Built " )
     ### tree printing ###
     dot=Digraph(comment='Bin Tree', format='png')
     dot=visualizeTree(dot,btree,0)
@@ -535,7 +537,9 @@ def Buildtracedict(Filename):
     return Actiondict
     
 def main(argv):
+    print("Mcrl2 parsing")
     actiondict=mcrl2Parsing(argv[1])
+    print("generating Traces")
     generateTrace(actiondict)
     ##first round of parsing to generate tracelist###
     input = FileStream("Tracelist.txt")
