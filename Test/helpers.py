@@ -173,19 +173,37 @@ def Refinement_Spec(listaction,refinement):
         if Action[0] == refinement[2]:
             a2=Action
     if refinement[0]=="OR":
+        String1 = ""
+        String2 = ""
+        for adict in getInter(a1[1],a2[1]):
+            String1+=" "+''.join('{}{}'.format(key, val) for key, val in adict.items())
+        for adict in getInter(a1[2],a2[2]):
+            String2+=" "+''.join('{}{}'.format(key, val) for key, val in adict.items())
+        if String1 == "":
+            String1 = "Ø" 
+        if String2 == "":
+            String2 = "Ø" 
+        XlabelString=String1.replace("[","(").replace("]",")")+" , "+String2.replace("[","(").replace("]",")")
         if refinement[1]==refinement[2]:
-            XlabelString="{Ø,{"+str(getInter(a1[1],a2[1]))+" , "+str(getInter(a1[2],a2[2]))+"})"
             return [refinement[1],getInter(a1[1],a2[1]),getInter(a1[2],a2[2])],XlabelString
         else:
-            XlabelString="(Ø,{"+str(getInter(a1[1],a2[1]))+" , "+str(getInter(a1[2],a2[2]))+"})"
             return ["Eps",getInter(a1[1],a2[1]),getInter(a1[2],a2[2])],XlabelString
             
     if refinement[0]=="SAND":
+        String1 = ""
+        String2 = ""
+        for adict in getUnion(a1[1],a2[1]):
+            String1+=" "+''.join('{}{}'.format(key, val) for key, val in adict.items())
+        for adict in getUnion(a1[2],a2[2]):
+            String2+=" "+''.join('{}{}'.format(key, val) for key, val in adict.items())
+        if String1 == "":
+            String1 = "Ø" 
+        if String2 == "":
+            String2 = "Ø" 
+        XlabelString=String1.replace("[","(").replace("]",")")+" , "+String2.replace("[","(").replace("]",")")
         if refinement[1]==refinement[2]:
-            XlabelString="{Ø,{"+str(getUnion(a1[1],a2[1]))+" , "+str(getUnion(a1[2],a2[2]))+"})"
             return [refinement[1],getUnion(a1[1],a2[1]),getUnion(a1[2],a2[2])],XlabelString
         else:
-            XlabelString="{Ø,{"+str(getUnion(a1[1],a2[1]))+" , "+str(getUnion(a1[2],a2[2]))+"})"
             return ["Eps",getUnion(a1[1],a2[1]),getUnion(a1[2],a2[2])],XlabelString
             
             
