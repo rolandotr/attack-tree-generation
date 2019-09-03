@@ -1,1 +1,0 @@
-<true*. exists A0,A1:Actors,B0:ATM,C0:Card. Cardtrapping(A0,A1,B0,C0). true*. final>true

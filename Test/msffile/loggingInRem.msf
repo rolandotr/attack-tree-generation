@@ -1,0 +1,1 @@
+<true*. exists A0:Actors,B0,B1:Machines,C0:Credentials. loggingInRem(A0,B0,B1,C0). true*. final>true

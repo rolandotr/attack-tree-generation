@@ -7,47 +7,33 @@
     <div class="content_area">
         <h1>Generation of Attack Trees</h1>
         <div id="mcrl-input">
-            <form action="index.php" method="post" id="specification_form">
+            <form action="process.php" method="post" id="specification_form" enctype="multipart/form-data">
                 <label>Your MCRL2 file</label> <br><br>
-                <textarea rows="20" cols="100" name="specification_file" form="specification_form"></textarea> <br><br>
-                <input type="submit" name="file_upload" value="Generate Trees" />
+                <input type="radio" name="upload_style" value="upload_file" id="file_upload" onchange="change_input()"/>Upload File (or)
+                <input type="radio" name="upload_style" value="upload_code" id="code_upload" checked onchange="change_input()"/>Enter your MRCL2 code here <br><br>
+                <textarea rows="20" cols="100" name="code_text" form="specification_form" id="code_area"></textarea> <br><br>
+                <input type="file" name="fileToUpload" id="fileToUpload" /><br><br>
+                <input type="submit" name="file_submit" value="Generate Trees" />
             </form>
         </div>
-        <div class="output_display">
-        <?php
-            if(isset($_POST['specification_file']) && isset($_POST['file_upload'])) {
-
-                $fileName='phpspecfile'.uniqid().'.mcrl2';
-                file_put_contents($fileName,$_POST['specification_file']);
-                echo "File Created successfully";
-
-                $pyscript="C:\\Users\\dnagumot\\xampp\\htdocs\\attack_trees\\Test\\FileParser.py";
-                $filePath="C:\\Users\\dnagumot\\xampp\\htdocs\\attack_trees\\".$fileName;
-                $cmd = "python $pyscript $filePath";
-                //echo $cmd;
-                exec("$cmd", $output);
-                echo "<div id='images'></div>";
-                //var_dump($output);
-                echo "<script>$(document).ready( function() { 
-                $('#specification_form').hide();
-                $('#mcrl-input').append('<button id=\'try-again\' onclick=\'tryAgainClick()\'>Try Again</button>')
-                $('#images').append('<h2>Binary Tree</h2>');
-                $('#images').append('<img src=\'Test/Bin Tree.gv.png\' style=\'width:500px;height:250px;\' />');
-                $('#images').append('<h2>Optimised Tree</h2>');
-                $('#images').append('<img src=\'Test/Opt Tree.gv.png\' style=\'width:500px;height:250px;\'/>');    
+        <script type="text/javascript">
+            $("#fileToUpload").hide();
+            function change_input() {
+                var radioValue = $("input[name='upload_style']:checked").val();
+                //console.log(radioValue);
+                if (radioValue=="upload_code") {
+                    $("#code_area").show();
+                    $("#fileToUpload").hide();
                 }
-            )
-            function tryAgainClick() {
-                    $('#specification_form').show();
-                    $('#try-again').remove();
-                    $('#images').empty();
-                    
-            }
-            </script>";
+                else {
+                    $("#code_area").hide();
+                    $("#fileToUpload").show();
+
+                }
 
             }
-        ?>
-        </div>
+        </script>
+
     </div>
 </body>
 </html>

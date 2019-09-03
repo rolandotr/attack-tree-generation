@@ -18,7 +18,7 @@ import shutil
 
 #####Trace Generation#######
 
-os.chdir("C:/Users/dnagumot/xampp/htdocs/attack_trees/Test")
+os.chdir("C:/Users/dnagumot/xampp/htdocs/attack_trees/attack-tree-generation/Test")
 
 def generateTrace(aDict):
 # '''
