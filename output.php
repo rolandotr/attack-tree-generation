@@ -9,13 +9,13 @@
         <div id='images'>
             <div id="binary-tree" style="float: left">
                 <h2>Binary Tree</h2>
-                <img src='Test/Bin Tree.gv.png' style='width:500px;height:250px;' /><br>
-                <a href="Test/Bin%20Tree.gv.png" download="BinaryTree.png" >Download Binary Tree</a>
+                <img src='Test/Bin Tree.gv.jpg' style='width:500px;height:250px;' /><br>
+                <a href="Test/Bin%20Tree.gv.jpg" download="BinaryTree.jpg" >Download Binary Tree</a>
             </div>
             <div id="opt-tree" style="float: left; padding-left: 10px;">
                 <h2>Optimised Tree</h2>
-                <img src='Test/Opt Tree.gv.png' style='width:500px;height:250px;'/><br>
-                <a href="Test/Opt%20Tree.gv.png" download="OptimisedTree.png" >Download Optimised Tree</a>
+                <img src='Test/Opt Tree.gv.jpg' style='width:500px;height:250px;'/><br>
+                <a href="Test/Opt%20Tree.gv.jpg" download="OptimisedTree.jpg" >Download Optimised Tree</a>
             </div>
         </div>
     </div>

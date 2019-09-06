@@ -1,21 +1,37 @@
 // Bin Tree
 digraph {
-	Eps1 [label="ε" xlabel="Ø ,  init_knows('Mallory,', 'Cred') init_located('Mallory,', 'Server')"]
-	Eps2 [label="ε" xlabel="Ø ,  init_knows('Mallory,', 'Cred')"]
-	bruteforcingPsw [label=bruteforcingPsw xlabel=""]
-	Eps2 -> bruteforcingPsw
-	Eps3 [label="ε" xlabel="Ø ,  init_knows('Mallory,', 'Cred')"]
-	eavesdropping [label=eavesdropping xlabel=""]
-	Eps3 -> eavesdropping
-	exploiting [label=exploiting xlabel=""]
-	Eps3 -> exploiting
+	Eps1 [label="ε" xlabel="Ø ,  is_stealing('Attacker')"]
+	Eps2 [label="ε" xlabel="Ø , Ø"]
+	Blackbox [label=Blackbox xlabel=""]
+	Eps2 -> Blackbox
+	Eps3 [label="ε" xlabel="Ø , Ø"]
+	Cardskimming [label=Cardskimming xlabel=""]
+	Eps3 -> Cardskimming
+	Eps4 [label="ε" xlabel="Ø , Ø"]
+	Cardtrapping [label=Cardtrapping xlabel=""]
+	Eps4 -> Cardtrapping
+	Eps5 [label="ε" xlabel="Ø , Ø"]
+	Explosion [label=Explosion xlabel=""]
+	Eps5 -> Explosion
+	Eps6 [label="ε" xlabel="Ø , Ø"]
+	MalwareNetwork [label=MalwareNetwork xlabel=""]
+	Eps6 -> MalwareNetwork
+	Eps7 [label="ε" xlabel="Ø , Ø"]
+	MalwarePC [label=MalwarePC xlabel=""]
+	Eps7 -> MalwarePC
+	RamRaid [label=RamRaid xlabel=""]
+	Eps7 -> RamRaid
+	Eps6 -> Eps7
+	Eps5 -> Eps6
+	Eps4 -> Eps5
+	Eps3 -> Eps4
 	Eps2 -> Eps3
 	"SAND1,0" [label="" shape=point]
 	Eps1 -> "SAND1,0" [arrowhead=none]
 	"SAND1,0" -> Eps2
-	"SAND1,0" -> "SAND1,1" [arrowhead=none constraint=false]
-	loggingInRem [label=loggingInRem xlabel=""]
+	"SAND1,0" -> "SAND1,1" [arrowhead=normal constraint=false]
+	StealingMoney [label=StealingMoney xlabel=""]
 	"SAND1,1" [label="" shape=point]
 	Eps1 -> "SAND1,1" [arrowhead=none]
-	"SAND1,1" -> loggingInRem
+	"SAND1,1" -> StealingMoney
 }

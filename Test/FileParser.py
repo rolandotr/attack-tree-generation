@@ -19,6 +19,8 @@ import shutil
 #####Trace Generation#######
 
 os.chdir("C:/Users/dnagumot/xampp/htdocs/attack_trees/attack-tree-generation/Test")
+log_file = open("logfile.txt","w") 
+
 
 def generateTrace(aDict):
 # '''
@@ -32,7 +34,9 @@ def generateTrace(aDict):
         print("first time Tracelist.txt is generated")
     os.mkdir('msffile') 
     os.chdir("msffile/")              
-    print("Creating Trace-generation Formula ") 
+    print("Creating Trace-generation Formula ")
+    sys.stdout.flush()
+    log_file.write("12%\n")
     i=65
     for action in aDict.keys():
         #to label the variable, we use letter of alphabet+ number of variable
@@ -91,6 +95,8 @@ def generateTrace(aDict):
     os.mkdir('lpsfile')
     output=[]
     print("Solving Formula ")
+    sys.stdout.flush()
+    log_file.write("25%\n")
     for element in fl:
         print('solving : ',element)
         print('pbessolve  -f '+'ATM.lps '+'pbesfile/'+element+' --evidence-file='+'lpsfile/'+element[:-4]+'lps')
@@ -100,6 +106,8 @@ def generateTrace(aDict):
     print(fl)
 
     print("Trace Generation")
+    sys.stdout.flush()
+    log_file.write("45%\n")
     ##### trace generation like before but on lps containing evidences######
     try:
         shutil.rmtree("trcfiles/")
@@ -144,6 +152,8 @@ def generateTrace(aDict):
             # print("we are here")
             f.writelines(str(Traceid)+ "\n"+element+"\n")   
     print("Traces Generation Done ") 
+    sys.stdout.flush()
+    log_file.write("50%\n")
 dot = Digraph(comment = 'Trace generated attack Tree')
 
 
@@ -498,20 +508,25 @@ def buildtree(Filename):
     
     ### tree generation ###
     print("Building Tree" )
+    sys.stdout.flush()
+    log_file.write("80%\n")
     btree=genbintree(pilist,P)
     print("Tree Built " )
+    log_file.write("100%\n")
+    sys.stdout.flush()
+    log_file.close();
     ### tree printing ###
-    dot=Digraph(comment='Bin Tree', format='png')
+    dot=Digraph(comment='Bin Tree', format='jpg')
     dot=visualizeTree(dot,btree,0)
     #print (dot.source)
-    dot.render('Bin Tree.gv',view=True)
+    dot.render('Bin Tree.gv')
     
     ####optimised tree printing####
     opttree=genopttree(btree)
-    dot=Digraph(comment='Opt Tree', format='png')
+    dot=Digraph(comment='Opt Tree', format='jpg')
     dot=visualizeTree(dot,opttree,0)
     #print (dot.source)
-    dot.render('Opt Tree.gv',view=True)
+    dot.render('Opt Tree.gv')
     
 def mcrl2Parsing(Filename):
     # for a given Mcrl2 specification File, create an xml file containing all the action and the type associated to it, the return the dictionnary
@@ -537,9 +552,13 @@ def Buildtracedict(Filename):
     return Actiondict
     
 def main(argv):
-    print("Mcrl2 parsing")
+    print("Mcrl2 parsing\n")
+    log_file.write("0% \n")
+    sys.stdout.flush()
     actiondict=mcrl2Parsing(argv[1])
     print("generating Traces")
+    sys.stdout.flush()
+    log_file.write("10% \n")
     generateTrace(actiondict)
     ##first round of parsing to generate tracelist###
     input = FileStream("Tracelist.txt")

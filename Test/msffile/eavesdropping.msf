@@ -1,1 +1,0 @@
-<true*. exists A0,A1:Actors,B0,B1:Machines,C0:Credentials. eavesdropping(A0,A1,B0,B1,C0). true*. final>true

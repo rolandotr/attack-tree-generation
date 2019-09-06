@@ -236,7 +236,7 @@ def visualizeTree(dot,tree,Epscount):
             dot.edge(topVertexName,'SAND'+str(Epscount)+','+str(childCount),arrowhead='none')
             dot.edge('SAND'+str(Epscount)+','+str(childCount),childLabel)
             if(childCount<len(tree.child)-1):
-                dot.edge('SAND'+str(Epscount)+','+str(childCount),'SAND'+str(Epscount)+','+str(childCount+1),constraint='false',arrowhead='none')
+                dot.edge('SAND'+str(Epscount)+','+str(childCount),'SAND'+str(Epscount)+','+str(childCount+1),constraint='false',arrowhead='normal')
         else:
             dot.edge(topVertexName,childLabel)
         childLabels.append(childLabel)
