@@ -1,27 +1,19 @@
 // Opt Tree
 digraph {
-	Eps1 [label="ε" xlabel="Ø ,  is_stealing('Attacker')"]
-	Eps2 [label="ε" xlabel="Ø , Ø"]
-	Blackbox [label=Blackbox xlabel=""]
-	Eps2 -> Blackbox
-	Cardskimming [label=Cardskimming xlabel=""]
-	Eps2 -> Cardskimming
-	Cardtrapping [label=Cardtrapping xlabel=""]
-	Eps2 -> Cardtrapping
-	Explosion [label=Explosion xlabel=""]
-	Eps2 -> Explosion
-	MalwareNetwork [label=MalwareNetwork xlabel=""]
-	Eps2 -> MalwareNetwork
-	MalwarePC [label=MalwarePC xlabel=""]
-	Eps2 -> MalwarePC
-	RamRaid [label=RamRaid xlabel=""]
-	Eps2 -> RamRaid
+	Eps1 [label="ε" xlabel="Ø ,  init_knows('Mallory,', 'Cred') init_located('Mallory,', 'Server')"]
+	Eps2 [label="ε" xlabel="Ø ,  init_knows('Mallory,', 'Cred')"]
+	bruteforcingPsw [label=bruteforcingPsw xlabel=""]
+	Eps2 -> bruteforcingPsw
+	eavesdropping [label=eavesdropping xlabel=""]
+	Eps2 -> eavesdropping
+	exploiting [label=exploiting xlabel=""]
+	Eps2 -> exploiting
 	"SAND1,0" [label="" shape=point]
 	Eps1 -> "SAND1,0" [arrowhead=none]
 	"SAND1,0" -> Eps2
 	"SAND1,0" -> "SAND1,1" [arrowhead=normal constraint=false]
-	StealingMoney [label=StealingMoney xlabel=""]
+	loggingInRem [label=loggingInRem xlabel=""]
 	"SAND1,1" [label="" shape=point]
 	Eps1 -> "SAND1,1" [arrowhead=none]
-	"SAND1,1" -> StealingMoney
+	"SAND1,1" -> loggingInRem
 }

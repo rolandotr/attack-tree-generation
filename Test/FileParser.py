@@ -15,6 +15,10 @@ from algorithms import *
 import os
 import subprocess as sub
 import shutil
+from pprint import pprint
+from tkinter import *
+from tkinter.filedialog import askopenfilename
+from tkinter.messagebox import showerror
 
 #####Trace Generation#######
 
@@ -369,15 +373,63 @@ def getMaxEdgeCC(graphG):
     # print(listofCC)    
     # print("\n")
     return listofCC
-    
-def Decomposition(SPsem):
-    print(SPsem)
+
+def getGraphLabels(P):
+    graphs=[]
+    for attack in P:
+        attackLabels=[]
+        for action in attack.actions:
+           label=action.label
+           #if hasattr(action,'params'):
+           #   label+='@'+action.params
+           attackLabels.append(label)
+        graphs.append(attackLabels)
+    return graphs
+
+def convertAttackToStrings(d):
+    graphs=[]
+    for attack in d:
+       actionLabels=[]
+       for action in attack.actions:
+          actionLabels.append(action.label)
+       graphs.append(actionLabels)   
+    return graphs
+def getAttacksFromLabels(U,d):
+    returnAttacks=[]
+    for actionLabels in U:
+       actionsInAttack=[]
+       actionLabelsInAttack=[]
+       for labels in actionLabels:
+          for attack in d:
+             for action in attack.actions:
+                if(action.label==labels and action.label not in actionLabelsInAttack):
+                   actionsInAttack.append(action)
+                   actionLabelsInAttack.append(labels)
+       returnAttacks.append(Attack(actionsInAttack))
+    return returnAttacks
+
+def Decomposition2(d):
+    print('Decomposition New 2:')
+    print(d)
+    if(len(d)==1 and len(d[0].actions)==1):
+       return d
+    flag=True
+    for attack in d:
+       if (len(attack.actions)!=1):
+          flag=False
+    if flag==True:
+       return d
+    #This is an attack. Converting it to strings
+    SPsem=convertAttackToStrings(d);
+    print (SPsem)
+
     G=[[],[],[]]
     U=[]
     V=[]
     E=[]
     Unamed=[]
     Vnamed=[]
+
     for trace in SPsem:
         for i in range(1,len(trace)):
             if ' '.join(trace[0:i])+'l' not in Unamed:
@@ -387,6 +439,8 @@ def Decomposition(SPsem):
                 V.append(trace[i:])
                 Vnamed.append(' '.join(trace[i:])+'r')
     index=0
+    #print ('Unamed', Unamed)
+    #print ('Vnamed', Vnamed)
     for subtrace1 in U:
         index2=0
         for subtrace2 in V:
@@ -396,7 +450,7 @@ def Decomposition(SPsem):
             index2+=1
         index+=1
     #rebuild SPsem  
-    
+    #print ('Edges', E)
     if isConnected([Unamed,Vnamed,E]):
         Gprime=Biclique(Unamed,Vnamed,E)
     else:
@@ -429,7 +483,202 @@ def Decomposition(SPsem):
                 # rebuildSpsem.append([action[:-1].split(),action2[:-1].split()])
      
     #eliminateredundant
-    return [Gprime[0],Gprime[1]]
+    UVDot=[]
+    Unew=removeLastLetter(Gprime[0])
+    print ('Left',Unew)
+    Vnew=removeLastLetter(Gprime[1])
+    print ('Right',Vnew)
+
+    for unew in Unew:
+       for vnew in Vnew:
+          UVDot.append([unew,vnew])
+    #print ('UVDot',UVDot)
+
+    for i in range (0, len(UVDot)):
+       jlist=[]
+       for j in range (0, len(UVDot[i])):
+          splitter=UVDot[i][j].split()
+          for item in splitter:
+             jlist.append(item)
+       UVDot[i]=jlist
+   
+    #print ('UVDotNow',UVDot)
+
+    #print ('UVDot New',UVDot)
+    UVDotTuple=[tuple(lst) for lst in UVDot]
+    SPsemTuple=[tuple(lst) for lst in SPsem]
+
+    if(set(UVDotTuple)!=set(SPsemTuple)):
+       return d
+    else:
+       ilist=[]
+       for item in Unew:
+          splitter=item.split();
+          ilist.append(splitter)
+          #for i in splitter:
+          #   ilist.append(i)
+       Unew=ilist
+       print ('Unew', Unew)
+       #print ('Vnew', Vnew)  
+       dUnew=getAttacksFromLabels(Unew,d)
+       print (dUnew)
+
+       ilist=[]
+       for item in Vnew:
+          splitter=item.split();
+          ilist.append(splitter)
+       Vnew=ilist
+       print ('Vnew', Vnew)  
+       dVnew=getAttacksFromLabels(Vnew,d)
+       print ('Vnew',dVnew)               
+       SPLeft=Decomposition2(dUnew)
+       SPRight=Decomposition2(dVnew)
+    #print ('Left',Gprime[0])
+    #print ('Right',Gprime[1])
+    #return [Gprime[0],Gprime[1]]
+       return (SPLeft,SPRight)
+    
+    
+def Decomposition(SPsem):
+    print('Decomposition New:')
+    print(SPsem)
+    
+    G=[[],[],[]]
+    U=[]
+    V=[]
+    E=[]
+    Unamed=[]
+    Vnamed=[]
+
+    returnTraces=[]
+    traceListFlag=False
+    for trace in SPsem:
+        #print (trace, type(trace))
+        if(isinstance(trace,list)!=True):
+           print ('Not a list')
+           traceListFlag=True
+        else:
+           returnTraces.append(trace)
+    if (traceListFlag==True):
+        #print ('Return Traces',returnTraces)
+        return SPsem
+    for trace in SPsem:
+        for i in range(1,len(trace)):
+            if ' '.join(trace[0:i])+'l' not in Unamed:
+                U.append(trace[0:i])
+                Unamed.append(' '.join(trace[0:i])+'l')
+            if ' '.join(trace[i:])+'r' not in Vnamed :   
+                V.append(trace[i:])
+                Vnamed.append(' '.join(trace[i:])+'r')
+    index=0
+    #print ('Unamed', Unamed)
+    #print ('Vnamed', Vnamed)
+    for subtrace1 in U:
+        index2=0
+        for subtrace2 in V:
+            if subtrace1+subtrace2 in SPsem:
+                if [Unamed[index],Vnamed[index2]] not in E:
+                    E.append([Unamed[index],Vnamed[index2]])
+            index2+=1
+        index+=1
+    #rebuild SPsem  
+    #print ('Edges', E)
+    if isConnected([Unamed,Vnamed,E]):
+        Gprime=Biclique(Unamed,Vnamed,E)
+    else:
+        listofCC=getMaxEdgeCC([Unamed,Vnamed,E])
+        maxedgegraph=[]
+        for graph in listofCC:
+            if len(list(graph)) > len(maxedgegraph):
+                maxedgegraph=list(graph)
+        Unamed=[]
+        Vnamed=[]
+        # print(E)
+        newE=E.copy()
+        for element in maxedgegraph:
+            if element[-1] == 'l':
+                Unamed.append(element)
+            if element[-1] == 'r':
+                Vnamed.append(element)
+        index=0
+        for subtrace1 in U:
+            index2=0
+        for subtrace2 in V:
+            if subtrace1+subtrace2 in SPsem:
+                if [Unamed[index],Vnamed[index2]] not in newE:
+                    newE.append([Unamed[index],Vnamed[index2]])
+        # print("voila les nouvelle edge")
+        # print(newE)
+        Gprime=Biclique(Unamed,Vnamed,newE)
+        
+            # if x for x in action[:-1].split().append(y for y in action2[:-1].split()) not in rebuildSpsem:
+                # rebuildSpsem.append([action[:-1].split(),action2[:-1].split()])
+     
+    #eliminateredundant
+    UVDot=[]
+    Unew=removeLastLetter(Gprime[0])
+    print ('Left',Unew)
+    Vnew=removeLastLetter(Gprime[1])
+    print ('Right',Vnew)
+
+    for unew in Unew:
+       for vnew in Vnew:
+          UVDot.append([unew,vnew])
+    #print ('UVDot',UVDot)
+
+    for i in range (0, len(UVDot)):
+       jlist=[]
+       for j in range (0, len(UVDot[i])):
+          splitter=UVDot[i][j].split()
+          for item in splitter:
+             jlist.append(item)
+       UVDot[i]=jlist
+   
+    #print ('UVDotNow',UVDot)
+
+    #print ('UVDot New',UVDot)
+    UVDotTuple=[tuple(lst) for lst in UVDot]
+    SPsemTuple=[tuple(lst) for lst in SPsem]
+
+    if(set(UVDotTuple)!=set(SPsemTuple)):
+       return SPsem
+    else:
+       ilist=[]
+       for item in Unew:
+          if ' ' in item:
+             splitter=item.split();
+             ilist.append(splitter)
+          else:
+             ilist.append(item)
+          #for i in splitter:
+          #   ilist.append(i)
+       Unew=ilist
+
+       ilist=[]
+       for item in Vnew:
+          splitter=item.split();
+          for i in splitter:
+             ilist.append(i)
+       Vnew=ilist
+       print ('Unew', Unew)
+       print ('Vnew', Vnew)          
+       SPLeft=Decomposition(Unew)
+       SPRight=Decomposition(Vnew)
+    #print ('Left',Gprime[0])
+    #print ('Right',Gprime[1])
+    #return [Gprime[0],Gprime[1]]
+       return [SPLeft,SPRight]
+    
+
+def removeLastLetter(U):
+    tempList=[]
+    for element in U:
+        tempList.append(element[:-1])
+    return tempList
+
+
+
+
              
 def buildtree(Filename):
     #this fonction take in input a xml File
@@ -439,8 +688,11 @@ def buildtree(Filename):
     root = tree.getroot()
     #Spsem
     for elem in root: 
+        #print ('Elem-',elem)
+
         E=[]
         for subelem in elem:
+            #print ('Sub elem-',subelem.attrib)
             E.append(list(subelem.attrib.values())[0].replace('-',""))
         pilist.append(E)
 
@@ -458,17 +710,16 @@ def buildtree(Filename):
         predicatdict={} 
         # print(elem.tag)
         for action in elem:
-            
-            # print(action.tag)
+            #print('Action Tag',action.attrib)
             e=[]
             eprime=[]
             for s in action:
                 # print(list(s.attrib.values()))
-                # print(s)
+                #print('S',s)
                 if len(list(s.attrib.values()))==0 :
                     
                     # print("i'm here")
-                    # print(s.tag)
+                    #print('S Tag',s.tag)
                     if s.tag =='e':
                         # print("ici")
                         for change in  s :
@@ -478,7 +729,7 @@ def buildtree(Filename):
                     if s.tag =='eprime':
                         for change in  s :
                             # print("ici pepe")
-                            # print(change.tag)
+                            print('Change Tag',change.attrib)
                             eprime.append({list(change.attrib.values())[0]:list(change.attrib.values())[1]})
             # print(list(action.attrib.values())[0].replace('-',""))
             # print("will be the key of ")
@@ -486,6 +737,8 @@ def buildtree(Filename):
             # print(eprime)
             predicatdict[list(action.attrib.values())[0].replace('-',"")]=[e,eprime]  
         listdict.append(predicatdict)
+    print ('List Dict')
+    pprint (listdict)
     listaction=[]
     for element in listdict:
         for action in element.keys():
@@ -502,38 +755,187 @@ def buildtree(Filename):
                     ARlist.append(action2[0])
         trueAr.append(ARlist)
     P=listaction
-    print(P)
+    pilist2=pilist
+    print(pilist2)
 
     pilist=convertListSeq(pilist)
-    
-    ### tree generation ###
+   
+    print('Changing init knows ---- ')
+    #listdict[2]['exploiting'][1][1]['init_knows1']=listdict[2]['exploiting'][1][1]['init_knows']
+    #del listdict[2]['exploiting'][1][1]['init_knows']
+    #print (listdict[2]['loggingInRem'])
+    print('Changed init knows ---- ')    
+
+    stores1=Predicate('stores',['psw1'])
+    knows1=Predicate('knows',['psw1'])
+    locatedM=Predicate('located',['Mallory','Server'])
+    exploiting=Action('exploiting',[],[stores1,knows1])
+    logging1=Action('loggingInRem1',[],[locatedM],'psw1')
+    A1=Attack([exploiting,logging1])
+    knows=Predicate('knows',['psw'])
+    bruteforcing=Action('bruteforcing',[],[knows])
+    logging=Action('loggingInRem',[],[locatedM],'psw')
+    A2=Attack([bruteforcing,logging])
+    locatedA=Predicate('located',['Alice','Server'])
+    start=Action('start',[],[locatedA])
+    eaves=Action('eavesdropping',[],[knows])
+    A3=Attack([start,eaves,logging])
+    #A3=Attack([eaves,logging])    
+    d=[A1,A2,A3]
+    P=[stores1,knows1,locatedM,knows,locatedA]
+    ## tree generation ###
+    #d=convertListDict(listdict)
+    d=convertDict(pilist2,listdict)
+    print('After Conversion')
+    for attack in d:
+       print (attack)
+       for action in attack.actions:
+          print(action.label)
+          if hasattr(action,'params'):
+             print ('Params:',action.params)
+          for event in action.eprime:
+            print(event.key,event.params)
+             
+
+
     print("Building Tree" )
     sys.stdout.flush()
     log_file.write("80%\n")
-    btree=genbintree(pilist,P)
+    
+    #remove last element for experiment
+    d = d[:-2]
+
+    
+    tree=genminmaxtree2(d,P)
+    #btree=genbintree(pilist,P)
     print("Tree Built " )
     log_file.write("100%\n")
     sys.stdout.flush()
     log_file.close();
     ### tree printing ###
-    dot=Digraph(comment='Bin Tree', format='jpg')
-    dot=visualizeTree(dot,btree,0)
+    dot=Digraph(comment='Min Max Tree', format='jpg')
+    dot=visualizeTree2(dot,tree)
     #print (dot.source)
-    dot.render('Bin Tree.gv')
-    
-    ####optimised tree printing####
-    opttree=genopttree(btree)
-    dot=Digraph(comment='Opt Tree', format='jpg')
-    dot=visualizeTree(dot,opttree,0)
-    #print (dot.source)
-    dot.render('Opt Tree.gv')
+    dot.render('Bin Tree.gv', view=True)
+
+def convertDict(pilist,listdict):
+    print ("Converting Dictionary")
+    actionNames=[]
+    actionDicts=[]
+    ePredicates=[]
+
+    eprimeCommonNumber=[]
+    eprimeKeys=[]
+    eprimeValues=[]
+    eprimePredicates=[]
+
+    actionObjects=[]
+    print (pilist)
+    for attack in pilist:
+       for action in attack:
+          for attackDict in listdict:
+             if action in attackDict.keys():
+                if(action not in actionNames):
+                   actionNames.append(action)
+                   actionDicts.append(attackDict[action])
+                   #print (action, attackDict[action])
+    print ('Action Dicts',actionDicts)
+    for idx,actionPredicate in enumerate(actionDicts):
+       e=actionPredicate[0]
+
+       eprime=actionPredicate[1]
+       eprimeactionPredicates=[]
+       for predicate in eprime:
+          for predicateKey in predicate.keys():
+             if predicateKey not in eprimeKeys:
+                p=Predicate(predicateKey,[predicate[predicateKey]])
+                eprimePredicates.append(p)
+                eprimeKeys.append(predicateKey)
+                eprimeValues.append(predicate[predicateKey])
+                eprimeCommonNumber.append(1)
+                eprimeactionPredicates.append(p)
+             else:
+                eprimeIndex=eprimeKeys.index(predicateKey)
+                if (eprimeValues[eprimeIndex]==predicate[predicateKey]):
+                   eprimeactionPredicates.append(eprimePredicates[eprimeIndex])
+                else:
+                   p=Predicate(predicateKey,[predicate[predicateKey]])
+                   eprimePredicates.append(p)
+                   eprimeKeys.append(predicateKey+str(eprimeCommonNumber[eprimeIndex]))
+                   eprimeValues.append(predicate[predicateKey])
+                   eprimeactionPredicates.append(p)
+                   eprimeCommonNumber[eprimeIndex]+=1
+       actionObjects.append(Action(actionNames[idx],[],eprimeactionPredicates))
+    print ("Action Objects",actionObjects)
+
+    d=[]
+    for attack in pilist:
+       actionsInAttack=[]
+       for action in attack:
+          actionIndex=actionNames.index(action)
+          actionsInAttack.append(actionObjects[actionIndex])
+       d.append(Attack(actionsInAttack))
+    return d
+         
+ 
+def convertListDict(listdict):
+    d=[]
+    actionLabels=[]
+    eventNodes=[]
+    allevents=[]
+    eventkeys=[]
+    allactions=[]
+    print ('Converting List Dict')
+    #print(len(listdict))
+    for dict in listdict:
+       #pprint(dict) 
+       actionObjects=[]
+       for key in dict.keys():
+          #print(keys)
+          if (key not in actionLabels):
+            #create a new action
+            #actionLabels.append(key)
+            #print (dict[key])
+            e=[];eprime=[]
+            for event in dict[key][1]:
+               print (event)
+               for eventkey in event.keys():
+                   if(eventkey not in eventkeys):
+                      eventkeys.append(eventkey)
+                      eventNodes.append(event[eventkey])
+                      eventObject=Predicate(eventkey,event[eventkey])
+                      eprime.append(eventObject)
+                      allevents.append(eventObject)
+                   else:
+                      indices=[i for i, x in enumerate(eventkeys) if x == eventkey]
+                      matched=False
+                      for i in indices:
+                        if(eventNodes[i]==event[eventkey]):
+                           matched=True
+                           eprime.append(allevents[i])
+                      if(matched==False):
+                         eventObject=Predicate(eventkey,event[eventkey]) 
+                         allevents.append(eventObject)
+                         eprime.append(eventObject)
+            print('Length of each action:',len(eprime))
+            actionObject=Action(key,e,eprime)
+            allactions.append(actionObject)
+            actionObjects.append(actionObject)
+            actionLabels.append(key)
+          else:
+             index=actionLabels.index(key)
+             actionObjects.append(allactions[index]) 
+       print('Length of Action Objects',len(actionObjects))
+       d.append(actionObjects) 
+    return d
     
 def mcrl2Parsing(Filename):
     # for a given Mcrl2 specification File, create an xml file containing all the action and the type associated to it, the return the dictionnary
-    input = FileStream(Filename)
-    lexer = McrlLexer(input)
-    stream = CommonTokenStream(lexer)
-    parser = McrlParser(stream)
+    input = FileStream(Filename) #Read input from the file
+    lexer = McrlLexer(input) #Create a lexer object from the input
+    stream = CommonTokenStream(lexer) # Create an ANTLR streaming object from the lexer
+    parser = McrlParser(stream) #Create an MCRL parser spec
+    #print ("Parser",parser)
     ### parsing on redundant free traces ###
     tree = parser.mcrl()
     printer = McrlListener()
@@ -587,7 +989,42 @@ def main(argv):
     walker2 = ParseTreeWalker()
     walker2.walk(printer2, tree2)
     print("\n\n\n",os.getcwd())
+    shutil.rmtree("lpsfile/")
+    shutil.rmtree("msffile/")
+    shutil.rmtree("pbesfile/")
+    shutil.rmtree("trcfiles/")
     buildtree("filename.xml")
-if __name__ == '__main__':
+    return True
 
+class MyFrame(Frame):
+    def __init__(self):
+        Frame.__init__(self)
+        self.master.title("Generation of Attack Trees")
+        self.master.rowconfigure(5, weight=1)
+        self.master.columnconfigure(5, weight=1)
+        self.grid(sticky=W+E+N+S)
+        self.master.geometry("800x500+100+100")
+        self.label=Label(self, text = 'Select Specification File Here',font =('Verdana', 15))
+        self.label.grid(row=1, column=2, sticky=W)
+
+
+        self.button = Button(self, text="Browse", command=self.load_file, width=10)
+        self.button.grid(row=2, column=2, sticky=W)
+
+    def load_file(self):
+        fname = askopenfilename(filetypes=(("Specification file", "*.mcrl2"),))
+        if fname:
+            sys.argv.append(fname)
+            try:
+                main(sys.argv)
+                self.label=Label(self, text = 'Traces Generated',font =('Verdana', 15))
+                self.label.grid(row=3, column=2, sticky=W)
+            except:                     # <- naked except is a bad idea
+                showerror("Open Source File", "Failed to read file\n'%s'" % fname)
+            return
+	    
+
+if __name__ == "__main__":
+    #MyFrame().mainloop()
     main(sys.argv)
+    

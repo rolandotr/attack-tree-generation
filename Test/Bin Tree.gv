@@ -1,37 +1,24 @@
-// Bin Tree
+// Min Max Tree
 digraph {
-	Eps1 [label="ε" xlabel="Ø ,  is_stealing('Attacker')"]
-	Eps2 [label="ε" xlabel="Ø , Ø"]
-	Blackbox [label=Blackbox xlabel=""]
-	Eps2 -> Blackbox
-	Eps3 [label="ε" xlabel="Ø , Ø"]
-	Cardskimming [label=Cardskimming xlabel=""]
-	Eps3 -> Cardskimming
-	Eps4 [label="ε" xlabel="Ø , Ø"]
-	Cardtrapping [label=Cardtrapping xlabel=""]
-	Eps4 -> Cardtrapping
-	Eps5 [label="ε" xlabel="Ø , Ø"]
-	Explosion [label=Explosion xlabel=""]
-	Eps5 -> Explosion
-	Eps6 [label="ε" xlabel="Ø , Ø"]
-	MalwareNetwork [label=MalwareNetwork xlabel=""]
-	Eps6 -> MalwareNetwork
-	Eps7 [label="ε" xlabel="Ø , Ø"]
-	MalwarePC [label=MalwarePC xlabel=""]
-	Eps7 -> MalwarePC
-	RamRaid [label=RamRaid xlabel=""]
-	Eps7 -> RamRaid
-	Eps6 -> Eps7
-	Eps5 -> Eps6
-	Eps4 -> Eps5
-	Eps3 -> Eps4
-	Eps2 -> Eps3
-	"SAND1,0" [label="" shape=point]
-	Eps1 -> "SAND1,0" [arrowhead=none]
-	"SAND1,0" -> Eps2
-	"SAND1,0" -> "SAND1,1" [arrowhead=normal constraint=false]
-	StealingMoney [label=StealingMoney xlabel=""]
-	"SAND1,1" [label="" shape=point]
-	Eps1 -> "SAND1,1" [arrowhead=none]
-	"SAND1,1" -> StealingMoney
+	"([],located(Mallory,Server,))Eps" [label="([],located(Mallory,Server,))Eps" xlabel=OR]
+	"([],knows(psw,)located(Mallory,Server,)located(Alice,Server,))Eps" [label="([],knows(psw,)located(Mallory,Server,)located(Alice,Server,))Eps" xlabel=SAND]
+	"([],knows(psw,))Eps" [label="([],knows(psw,))Eps" xlabel=OR]
+	"([],knows(psw,))bruteforcing" [label="([],knows(psw,))bruteforcing"]
+	"([],knows(psw,))Eps" -> "([],knows(psw,))bruteforcing"
+	"([],knows(psw,)located(Alice,Server,))Eps" [label="([],knows(psw,)located(Alice,Server,))Eps" xlabel=SAND]
+	"([],located(Alice,Server,))start" [label="([],located(Alice,Server,))start"]
+	"([],knows(psw,)located(Alice,Server,))Eps" -> "([],located(Alice,Server,))start"
+	"([],knows(psw,))eavesdropping" [label="([],knows(psw,))eavesdropping"]
+	"([],knows(psw,)located(Alice,Server,))Eps" -> "([],knows(psw,))eavesdropping"
+	"([],knows(psw,))Eps" -> "([],knows(psw,)located(Alice,Server,))Eps"
+	"([],knows(psw,)located(Mallory,Server,)located(Alice,Server,))Eps" -> "([],knows(psw,))Eps"
+	"([],located(Mallory,Server,))loggingInRem" [label="([],located(Mallory,Server,))loggingInRem"]
+	"([],knows(psw,)located(Mallory,Server,)located(Alice,Server,))Eps" -> "([],located(Mallory,Server,))loggingInRem"
+	"([],located(Mallory,Server,))Eps" -> "([],knows(psw,)located(Mallory,Server,)located(Alice,Server,))Eps"
+	"([],knows(psw1,)stores(psw1,)located(Mallory,Server,))Eps" [label="([],knows(psw1,)stores(psw1,)located(Mallory,Server,))Eps" xlabel=SAND]
+	"([],stores(psw1,)knows(psw1,))exploiting" [label="([],stores(psw1,)knows(psw1,))exploiting"]
+	"([],knows(psw1,)stores(psw1,)located(Mallory,Server,))Eps" -> "([],stores(psw1,)knows(psw1,))exploiting"
+	"([],located(Mallory,Server,))loggingInRem1" [label="([],located(Mallory,Server,))loggingInRem1"]
+	"([],knows(psw1,)stores(psw1,)located(Mallory,Server,))Eps" -> "([],located(Mallory,Server,))loggingInRem1"
+	"([],located(Mallory,Server,))Eps" -> "([],knows(psw1,)stores(psw1,)located(Mallory,Server,))Eps"
 }

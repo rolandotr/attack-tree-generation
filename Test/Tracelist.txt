@@ -1,40 +1,39 @@
 1
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing) -Blackbox(Attacker, Atm1)-> 
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling[c(Attacker, Atm1) -> true],is_stealing) -StealingMoney(Attacker, Atm1)-> 
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling[c(Attacker, Atm1) -> true],is_stealing[s(Attacker) -> true]) -final-> 
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling[c(Attacker, Atm1) -> true],is_stealing[s(Attacker) -> true])
+(init_located[l(Mallory, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Alice, psw1) -> true]) -bruteforcingPsw(Mallory, Client, Server, psw1)-> 
+(init_located[l(Mallory, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Mallory, psw1) -> true][k(Alice, psw1) -> true]) -loggingInRempswa(Mallory, Client, Server, psw1)-> 
+(init_located[l(Mallory, Server) -> true][l(Mallory, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Mallory, psw1) -> true][k(Alice, psw1) -> true]) -final-> 
+(init_located[l(Mallory, Server) -> true][l(Mallory, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Mallory, psw1) -> true][k(Alice, psw1) -> true])
 2
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing) -Cardskimming(Customer, Attacker, Atm1, Card1, Card2)-> 
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card2) -> true][v(Card1) -> true],is_destroyed,is_controlling,is_stealing) -StealingMoney(Attacker, Atm1)-> 
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card2) -> true][v(Card1) -> true],is_destroyed,is_controlling,is_stealing[s(Attacker) -> true]) -final-> 
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card2) -> true][v(Card1) -> true],is_destroyed,is_controlling,is_stealing[s(Attacker) -> true])
+(init_located[l(Mallory, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Alice, psw1) -> true]) -startTerm(Alice, Client)-> 
+(init_located[l(Mallory, Client) -> true][l(Alice, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Alice, psw1) -> true]) -eavesdropping(Alice, Mallory, Client, Server, psw1)-> 
+(init_located[l(Mallory, Client) -> true][l(Alice, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Mallory, psw1) -> true][k(Alice, psw1) -> true]) -loggingInRempswa(Mallory, Client, Server, psw1)-> 
+(init_located[l(Mallory, Server) -> true][l(Mallory, Client) -> true][l(Alice, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Mallory, psw1) -> true][k(Alice, psw1) -> true]) -final-> 
+(init_located[l(Mallory, Server) -> true][l(Mallory, Client) -> true][l(Alice, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Mallory, psw1) -> true][k(Alice, psw1) -> true])
 3
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing) -Cardtrapping(Customer, Attacker, Atm1, Card1)-> 
-(owningCard_tuple[o(Attacker, Card2) -> true][o(Attacker, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing) -StealingMoney(Attacker, Atm1)-> 
-(owningCard_tuple[o(Attacker, Card2) -> true][o(Attacker, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing[s(Attacker) -> true]) -final-> 
-(owningCard_tuple[o(Attacker, Card2) -> true][o(Attacker, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing[s(Attacker) -> true])
+(init_located[l(Mallory, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Alice, psw1) -> true]) -exploiting(Mallory, Client, Server, psw2)-> 
+(init_located[l(Mallory, Client) -> true],init_stores[s(Server, psw2) -> true][s(Server, psw1) -> true],init_knows[k(Mallory, psw2) -> true][k(Alice, psw1) -> true]) -loggingInRempswb(Mallory, Client, Server, psw2)-> 
+(init_located[l(Mallory, Server) -> true][l(Mallory, Client) -> true],init_stores[s(Server, psw2) -> true][s(Server, psw1) -> true],init_knows[k(Mallory, psw2) -> true][k(Alice, psw1) -> true]) -final-> 
+(init_located[l(Mallory, Server) -> true][l(Mallory, Client) -> true],init_stores[s(Server, psw2) -> true][s(Server, psw1) -> true],init_knows[k(Mallory, psw2) -> true][k(Alice, psw1) -> true])
 4
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing) -Explosion(Attacker, Atm1)-> 
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card1) -> true],is_destroyed[d(Atm1) -> true],is_controlling,is_stealing) -StealingMoney(Attacker, Atm1)-> 
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card1) -> true],is_destroyed[d(Atm1) -> true],is_controlling,is_stealing[s(Attacker) -> true]) -final-> 
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card1) -> true],is_destroyed[d(Atm1) -> true],is_controlling,is_stealing[s(Attacker) -> true])
+(init_located[l(Mallory, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Alice, psw1) -> true]) -bruteforcingPsw(Mallory, Client, Server, psw1)-> 
+(init_located[l(Mallory, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Mallory, psw1) -> true][k(Alice, psw1) -> true]) -loggingInRempswa(Mallory, Client, Server, psw1)-> 
+(init_located[l(Mallory, Server) -> true][l(Mallory, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Mallory, psw1) -> true][k(Alice, psw1) -> true]) -final-> 
+(init_located[l(Mallory, Server) -> true][l(Mallory, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Mallory, psw1) -> true][k(Alice, psw1) -> true])
 5
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing) -MalwareNetwork(Attacker, Atm1, AtmNetwork)-> 
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling[c(Attacker, Atm1) -> true],is_stealing) -StealingMoney(Attacker, Atm1)-> 
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling[c(Attacker, Atm1) -> true],is_stealing[s(Attacker) -> true]) -final-> 
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling[c(Attacker, Atm1) -> true],is_stealing[s(Attacker) -> true])
+(init_located[l(Mallory, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Alice, psw1) -> true]) -exploiting(Mallory, Client, Server, psw2)-> 
+(init_located[l(Mallory, Client) -> true],init_stores[s(Server, psw2) -> true][s(Server, psw1) -> true],init_knows[k(Mallory, psw2) -> true][k(Alice, psw1) -> true]) -loggingInRempswb(Mallory, Client, Server, psw2)-> 
+(init_located[l(Mallory, Server) -> true][l(Mallory, Client) -> true],init_stores[s(Server, psw2) -> true][s(Server, psw1) -> true],init_knows[k(Mallory, psw2) -> true][k(Alice, psw1) -> true]) -final-> 
+(init_located[l(Mallory, Server) -> true][l(Mallory, Client) -> true],init_stores[s(Server, psw2) -> true][s(Server, psw1) -> true],init_knows[k(Mallory, psw2) -> true][k(Alice, psw1) -> true])
 6
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing) -MalwarePC(Attacker, Atm1, AtmPC)-> 
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling[c(Attacker, Atm1) -> true],is_stealing) -StealingMoney(Attacker, Atm1)-> 
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling[c(Attacker, Atm1) -> true],is_stealing[s(Attacker) -> true]) -final-> 
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling[c(Attacker, Atm1) -> true],is_stealing[s(Attacker) -> true])
+(init_located[l(Mallory, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Alice, psw1) -> true]) -startTerm(Alice, Client)-> 
+(init_located[l(Mallory, Client) -> true][l(Alice, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Alice, psw1) -> true]) -exploiting(Mallory, Client, Server, psw2)-> 
+(init_located[l(Mallory, Client) -> true][l(Alice, Client) -> true],init_stores[s(Server, psw2) -> true][s(Server, psw1) -> true],init_knows[k(Mallory, psw2) -> true][k(Alice, psw1) -> true]) -loggingOut(Alice, Client)-> 
+(init_located[l(Mallory, Client) -> true],init_stores[s(Server, psw2) -> true][s(Server, psw1) -> true],init_knows[k(Mallory, psw2) -> true][k(Alice, psw1) -> true]) -loggingInRempswb(Mallory, Client, Server, psw2)-> 
+(init_located[l(Mallory, Server) -> true][l(Mallory, Client) -> true],init_stores[s(Server, psw2) -> true][s(Server, psw1) -> true],init_knows[k(Mallory, psw2) -> true][k(Alice, psw1) -> true]) -final-> 
+(init_located[l(Mallory, Server) -> true][l(Mallory, Client) -> true],init_stores[s(Server, psw2) -> true][s(Server, psw1) -> true],init_knows[k(Mallory, psw2) -> true][k(Alice, psw1) -> true])
 7
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing) -RamRaid(Attacker, Atm1)-> 
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card1) -> true],is_destroyed[d(Atm1) -> true],is_controlling,is_stealing) -StealingMoney(Attacker, Atm1)-> 
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card1) -> true],is_destroyed[d(Atm1) -> true],is_controlling,is_stealing[s(Attacker) -> true]) -final-> 
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card1) -> true],is_destroyed[d(Atm1) -> true],is_controlling,is_stealing[s(Attacker) -> true])
-8
-(owningCard_tuple[o(Customer, Card1) -> true][o(Attacker, Card2) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing) -Cardtrapping(Customer, Attacker, Atm1, Card1)-> 
-(owningCard_tuple[o(Attacker, Card2) -> true][o(Attacker, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing) -StealingMoney(Attacker, Atm1)-> 
-(owningCard_tuple[o(Attacker, Card2) -> true][o(Attacker, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing[s(Attacker) -> true]) -final-> 
-(owningCard_tuple[o(Attacker, Card2) -> true][o(Attacker, Card1) -> true],validCard_tuple[v(Card1) -> true],is_destroyed,is_controlling,is_stealing[s(Attacker) -> true])
+(init_located[l(Mallory, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Alice, psw1) -> true]) -startTerm(Alice, Client)-> 
+(init_located[l(Mallory, Client) -> true][l(Alice, Client) -> true],init_stores[s(Server, psw1) -> true],init_knows[k(Alice, psw1) -> true]) -exploiting(Mallory, Client, Server, psw2)-> 
+(init_located[l(Mallory, Client) -> true][l(Alice, Client) -> true],init_stores[s(Server, psw2) -> true][s(Server, psw1) -> true],init_knows[k(Mallory, psw2) -> true][k(Alice, psw1) -> true]) -loggingInRempswb(Mallory, Client, Server, psw2)-> 
+(init_located[l(Mallory, Server) -> true][l(Mallory, Client) -> true][l(Alice, Client) -> true],init_stores[s(Server, psw2) -> true][s(Server, psw1) -> true],init_knows[k(Mallory, psw2) -> true][k(Alice, psw1) -> true]) -final-> 
+(init_located[l(Mallory, Server) -> true][l(Mallory, Client) -> true][l(Alice, Client) -> true],init_stores[s(Server, psw2) -> true][s(Server, psw1) -> true],init_knows[k(Mallory, psw2) -> true][k(Alice, psw1) -> true])

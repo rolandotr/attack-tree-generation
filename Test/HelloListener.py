@@ -80,14 +80,20 @@ class HelloListener(ParseTreeListener):
                         if len(element[actions][0][2])!=0:
                             e=ET.SubElement(Action,"e")
                             for valuelista in element[actions]:
-                                ET.SubElement(e,"Change" ,Tuplename=str(valuelista[0]),value=str(substitution(['psw1','psw2'],"cred",valuelista[2])))
+                                print ("Line Removed")
+                                #ET.SubElement(e,"Change" ,Tuplename=str(valuelista[0]),value=str(substitution(['psw1','psw2'],"cred",valuelista[2])))
+                                #ET.SubElement(e,"Change" ,Tuplename=str(valuelista[0]),value=str(substitution(['psw1'],"psw",valuelista[2])))
+                                ET.SubElement(e,"Change" ,Tuplename=str(valuelista[0]), value=str(valuelista[2]))
                         else:
                             e=ET.SubElement(Action,"e",value="none")
                             # Tuplename=str(element[actions][0][0]),value=str(element[actions][0][1])
                         if len(element[actions][0][1])!=0:
                             eprime=ET.SubElement(Action,"eprime")
                             for valuelista in element[actions]:
-                                ET.SubElement(eprime,"Change" ,Tuplename=str(valuelista[0]),value=str(substitution(['psw1','psw2'],"Cred",valuelista[1])))
+                                print ("Line Removed")
+                                #ET.SubElement(eprime,"Change" ,Tuplename=str(valuelista[0]),value=str(substitution(['psw1','psw2'],"Cred",valuelista[1])))
+                                #ET.SubElement(eprime,"Change" ,Tuplename=str(valuelista[0]),value=str(substitution(['psw1'],"psw",valuelista[1])))
+                                ET.SubElement(eprime,"Change" ,Tuplename=str(valuelista[0]), value=str(valuelista[1]))
                         else:
                             eprime=ET.SubElement(Action,"eprime",value="none")
                         

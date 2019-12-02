@@ -211,9 +211,9 @@ def Refinement_Spec(listaction,refinement):
 def visualizeTree(dot,tree,Epscount):
     if(singleNodeTree(tree)):
         #if the tree didn't have any further children, then return dot after creating the node with label
-        dot.node(tree.top.getLabel(),tree.top.getLabel(),xlabel=tree.XlabelString)
+        dot.node(tree.top,tree.top,xlabel=tree.XlabelString)
         return dot
-    topVertexName=tree.top.getLabel() #topVertexName is the name of the node for dot language
+    topVertexName=tree.top #topVertexName is the name of the node for dot language
     topVertexLabel=topVertexName #topVertexLabel represents the label in the dot language
     if (topVertexName=='Eps'):
         #if the tree has the top node as 'Eps' change the name as 'Eps' followed by a count variable 'EpsCount'
@@ -228,7 +228,7 @@ def visualizeTree(dot,tree,Epscount):
     for child in tree.child:
         #Every child can be a different tree and hence call visualize tree again which fetches the dot file after visualization
         dot=visualizeTree(dot,child,Epscount) #pass child as a tree and Epscount with updated count
-        childLabel=child.top.getLabel() #child label is the label of the child tree, if the node is 
+        childLabel=child #child label is the label of the child tree, if the node is 
         if (childLabel=='Eps'):
             childLabel+=str(Epscount+1) #if the child label is Eps increase the Epscount by 1
         if (tree.relation=='SAND'):
@@ -247,25 +247,19 @@ def visualizeTree(dot,tree,Epscount):
 #            dot.edge(childLabels[i],childLabels[i+1])
     return dot
 
-def visualizeTree2(dot,tree,treeCount):
-    if(singleNodeTree(tree)):
-        #if the tree didn't have any further children, then return dot after creating the node with label
-        treeCount+=1
-        dot.node('Tree'+str(treeCount),tree.top.getLabel())
-        return (dot,treeCount)
-    topVertexLabel=tree.top.getLabel()
-    treeCount+=1
-    thisTreeCount=treeCount
-    dot.node('Tree'+str(treeCount),topVertexLabel) #add the node to dot file
-    
-    childCount=0
-    for child in tree.child:
-        (dot,treeCount)=visualizeTree2(dot,child,treeCount)
-        childCount+=1
-        print("Tree Count",treeCount)
-        dot.edge('Tree'+str(thisTreeCount),'Tree'+str(treeCount))
-    return (dot,thisTreeCount)
-        
+def visualizeTree2(dot,tree):
+    print (tree.top)
+    if (hasattr(tree,'relation')):
+       print (tree.relation)
+       dot.node(tree.top,tree.top,xlabel=tree.relation)
+    else:
+       dot.node(tree.top,tree.top)
+    if (hasattr(tree,'child')):
+       for child in tree.child:
+          dot=visualizeTree2(dot,child)
+          dot.edge(tree.top,child.top)
+          print (child.top)
+    return dot
         
             
 ###########################Set Functions#################################

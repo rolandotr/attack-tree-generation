@@ -36,6 +36,27 @@ class Sequence:
         label+=self.side
         return label
 
+##For Min-Max-Tree
+
+class Predicate:
+   def __init__(self,key, params):
+      self.key=key
+      self.params=params
+
+class Action:
+    def __init__(self, label, e,eprime, params=None, decompositionLabel=None):
+       self.label=label
+       self.e=e
+       self.eprime=eprime
+       if params is not None:
+          self.params=params
+
+class Attack:
+    def __init__(self, actions):
+       self.actions=actions
+
+##For Min-Max-Tree
+      
 class Tree:
     #A tree usually has a top sequence and may have children and relation
     def __init__(self,top,child=None,relation=None,XlabelString=None):

@@ -1,0 +1,152 @@
+sort
+  Actors    	= struct Attacker | Customer ;
+  ATM    		= struct Atm1 ;
+  AtmComp  		= struct AtmPC | AtmNetwork ;
+  Card 			= struct Card1 | Card2;
+  Bankaccount	= struct acc1;
+  Location		= struct Home | Gazstation; 
+
+act
+  Withdrawmoney : Actors # Bankaccount # ATM ;
+  Move	       : Actors # Location #Location;
+  Cardskimming : Actors # Actors # ATM # Card # Card;
+  Cardtrapping : Actors # Actors # ATM # Card;
+  Explosion,RamRaid,Blackbox,StealingMoney : Actors # ATM ;
+  MalwarePC,MalwareNetwork :Actors # ATM # AtmComp;
+  final;
+
+sort 
+  localisation_tuple	= struct l(a:Actors, l: Location);
+  bank_link				= struct b(b:Bankaccount , c: Card);
+  got_money				= struct g(b:Bankaccount);
+  owningaccount_tuple 	= struct o(a:Actors, b: Bankaccount);
+  owningcard_tuple		= struct u(a:Actors, c:Card);
+  validCard_tuple   	= struct v(c: Card);
+  is_destroyed  		= struct d(atm:ATM);
+  is_controlling       	= struct c(a:Actors, atm:ATM);
+  is_stealing			= struct s(a:Actors);
+  is_withdrawing 		= struct w(a:Actors,atm: ATM);
+  
+  Located		= localisation_tuple -> Bool;
+  Banklink		= bank_link -> Bool;
+  Gotmoney		= got_money -> Bool; 
+  Withdrawing	= is_withdrawing -> Bool;
+  Havecard		= owningcard_tuple -> Bool;
+  Owning    	= owningaccount_tuple -> Bool;
+  Valid		 	= validCard_tuple -> Bool;
+  Destroyed     = is_destroyed  -> Bool;
+  Controled   	= is_controlling -> Bool;
+  Stealing		= is_stealing -> Bool;
+
+map
+  localisation_tuple:Located;
+  bank_link  :Banklink;
+  got_money	:Gotmoney;
+  is_withdrawing : Withdrawing;
+  owningcard_tuple : Havecard;
+  owningaccount_tuple : Owning;
+  validCard_tuple : Valid;
+  is_destroyed : Destroyed;
+  is_controlling : Controled;
+  is_stealing :Stealing;
+
+var aa:Actors; mm1:ATM; cc:Card; bb:Bankaccount; loc:Location;
+eqn
+  localisation_tuple(l(aa,loc)) = false;
+  bank_link(b(bb,cc))			= false;
+  got_money(g(bb))				= false;
+  is_withdrawing(w(aa,mm1))  	= false;
+  owningcard_tuple(u(aa,cc))	= false;
+  owningaccount_tuple(o(aa,bb)) = false;
+  validCard_tuple(v(cc)) 		= false;
+  is_destroyed(d(mm1)) 			= false;
+  is_controlling(c(aa,mm1)) 	= false;
+  is_stealing(s(aa))			= false;
+  
+
+proc
+  X(withdrawing:Withdrawing,located : Located, banklink : Banklink, gotmoney : Gotmoney, havecard : Havecard, owning : Owning, valid : Valid, destroyed : Destroyed, controled : Controled, stealing : Stealing)
+=
+
+  (stealing(s(Attacker))) -> final. X() % signal Mallory reached her goal
++
+(
+% Move Actors # Location;]
+  sum aa:Actors, loc1,loc2:Location.
+ 	(!stealing(s(Attacker)) && !located(l(aa,loc1)) && loc1 != loc2 && located(l(aa,loc2)) )
+ 	->
+ 	 Move(aa,loc1,loc2). X(located = located[l(aa,loc1) -> true][l(aa,loc2)-> false])
++
+% WithdrawMoney Actors# Bankaccount # ATM ;
+  sum aa:Actors, bb:Bankaccount, mm:ATM.
+	(!stealing(s(Attacker)) && located(l(aa,Gazstation))&& aa==Customer && gotmoney(g(bb)) )
+	->
+ 	 Withdrawmoney(aa,bb,mm). X(withdrawing = withdrawing[w(aa,mm) -> true ])
++
+% Cardskimming
+  sum aa:Actors, aa1:Actors, mm1:ATM, cc,cc1:Card. 
+    (!stealing(s(aa1)) && aa1== Attacker && aa != aa1 && !destroyed(d(mm1)) && cc != cc1 && cc1 == Card2 && !valid(v(cc1)) && !havecard(u(aa1,Card1)) && located(l(aa,Gazstation))&& withdrawing(w(aa,mm1)) )
+    ->
+      Cardskimming(aa,aa1,mm1,cc,cc1). X(valid = valid[v(cc1) -> true])
++
+
+% Cardtrapping : Actors # Actors # ATM # Card;
+  sum aa:Actors, aa1:Actors, mm1:ATM, cc:Card.
+    (!stealing(s(aa1)) && aa != aa1 && aa1==Attacker && !destroyed(d(mm1)) && cc==Card1 && !havecard(u(aa1,cc)) && withdrawing(w(aa,mm1)) )
+    ->
+      Cardtrapping(aa,aa1,mm1,cc). X(havecard = havecard[u(aa,cc) -> false][u(aa1,cc) -> true])
+
++
+%  Explosion  : Actors # ATM ;
+  sum aa:Actors, mm:ATM.
+    (!stealing(s(aa)) && aa==Attacker && !destroyed(d(mm)) && !valid(v(Card2)) && !havecard(u(aa,Card1)))
+    ->
+      Explosion(aa,mm). X(destroyed = destroyed[d(mm) -> true] )
+
++
+% RamRaid  : Actors # ATM ;
+  sum aa:Actors, mm:ATM.
+    (!stealing(s(aa)) && aa==Attacker && !destroyed(d(mm)) && !valid(v(Card2)) && !havecard(u(aa,Card1)) )
+    ->
+      RamRaid(aa,mm). X(destroyed = destroyed[d(mm) -> true] )
++
+%MalwarePC	:Actors # ATM # AtmComp;
+  sum aa:Actors, mm:ATM, atmc:AtmComp.
+    (!stealing(s(aa)) && aa==Attacker && !destroyed(d(mm)) && atmc == AtmPC && !valid(v(Card2)) && !havecard(u(aa,Card1)) )
+    ->
+      MalwarePC(aa,mm,atmc). X(controled = controled[c(aa,mm) -> true] )
++
+% MalwareNetwork :Actors # ATM # AtmComp;
+  sum aa:Actors, mm:ATM, atmc:AtmComp.
+    (!stealing(s(aa)) && aa==Attacker && !destroyed(d(mm)) && atmc == AtmNetwork && !valid(v(Card2)) && !havecard(u(aa,Card1)) )
+    ->
+      MalwareNetwork(aa,mm,atmc). X(controled = controled[c(aa,mm) -> true] )
++
+%  Blackbox,StealingMoney   : Actors # ATM ;
+  sum aa:Actors, mm:ATM.
+    (!stealing(s(aa)) && aa==Attacker && !destroyed(d(mm)) && !valid(v(Card2)) && !havecard(u(aa,Card1)) )
+    ->
+      Blackbox(aa,mm). X(controled = controled[c(aa,mm) -> true] )
++
+%StealingMoney   : Actors # ATM ;
+  sum aa:Actors, mm:ATM.
+    (!stealing(s(aa)) && aa==Attacker &&  (destroyed(d(mm)) || controled(c(aa,mm)) || havecard(u(aa,Card1)) || valid(v(Card2)) ) )
+    ->
+      StealingMoney(aa,mm). X(stealing = stealing[s(aa) -> true] )
+
+)
+
+;
+
+
+init X(is_withdrawing[w(Customer,Atm1)-> false],
+	   localisation_tuple[l(Customer,Home)-> true],
+ 	   bank_link[b(acc1,Card1)-> true],
+  	   got_money[g(acc1)-> true ],	
+	   owningcard_tuple[u(Attacker,Card2) -> true][u(Customer,Card1)-> true], 		
+	   owningaccount_tuple[o(Customer,acc1)-> true],
+       validCard_tuple[v(Card1) -> true],
+	   is_destroyed[d(Atm1) -> false],	
+  	   is_controlling[c(Attacker,Atm1) -> false],      	
+  	   is_stealing[s(Attacker) -> false]			
+        );
