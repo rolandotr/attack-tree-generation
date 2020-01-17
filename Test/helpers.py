@@ -1,7 +1,7 @@
 
 """
 @author: Dinesh Nagumothu
-@desc: It has got functions like bipartite, findIsolated, getMaxDegree, getDegree, splitVertices, 
+@desc: It has got functions like bipartite, findIsolated, getMaxDegree, getDegree, splitVertices,
 checkEquals, singleActionTrace, display, singleNodeTree, displayTree
 
 Note: class Sequence was initially named as Vertex and hence if there is something represented in vertex consider it as a sequence which is a list of nodes with side
@@ -10,7 +10,7 @@ Note: class Sequence was initially named as Vertex and hence if there is somethi
 from graphviz import Digraph
 
 def bipartite(G,E):
-    #Find if the graph is bipartite or not. If the graph is bipartite return True else return false 
+    #Find if the graph is bipartite or not. If the graph is bipartite return True else return false
     for vertex in G:
         # for every vertex in the graph
         count=0 # initiate count with 0
@@ -32,14 +32,14 @@ def findIsolated(G,E):
         for e in edge:
             # for each vertex in the Edge
             edgeVertices.append(e) #Append those vertices to a list to find flatten all the edges
-    
+
     for vertex in G:
         #for every vertex in the graph
         if (vertex not in edgeVertices):
             #if the vertex is not in the above considered edge vertices, we can consider it as an isolated vertex
             isolatedVertices.append(vertex) #append the isolated vertex to the graph
     return (isolatedVertices) #return the isolated vertices
-    
+
 
 def getMaxDegree(G,E):
     #FUNCTION to find the maximum degree and vertices with maximum degree
@@ -54,7 +54,7 @@ def getMaxDegree(G,E):
         degrees.append([vertex,count])
         if (count>maxCount):
             maxCount=count
-    degrees.sort(key = lambda x: x[1], reverse=True) 
+    degrees.sort(key = lambda x: x[1], reverse=True)
     for vertex in G:
         count=0
         for edge in E:
@@ -120,7 +120,7 @@ def display(graphs,title):
     print (title,':',end=',')
     for vertex in graphs:
         print (vertex.getLabel(),end=',')
-    print('\n') 
+    print('\n')
 
 def singleNodeTree(tree):
     #function to verify if tree has any child nodes. True if there is no child and false if a child is present
@@ -136,7 +136,7 @@ def displayTree(tree):
         for child in tree.child:
             displayTree(child)
         print (']',end=',')
-        
+
 def getInter(dictlista1,dictlista2):
 
     # print("==========INTER FONCTION=======")
@@ -149,7 +149,7 @@ def getInter(dictlista1,dictlista2):
     # print("result :")
     # print(interlist)
     return interlist
-    
+
 def getUnion(dictlista1,dictlista2):
 
     interlist=[]
@@ -180,15 +180,15 @@ def Refinement_Spec(listaction,refinement):
         for adict in getInter(a1[2],a2[2]):
             String2+=" "+''.join('{}{}'.format(key, val) for key, val in adict.items())
         if String1 == "":
-            String1 = "Ø" 
+            String1 = "Ø"
         if String2 == "":
-            String2 = "Ø" 
+            String2 = "Ø"
         XlabelString=String1.replace("[","(").replace("]",")")+" , "+String2.replace("[","(").replace("]",")")
         if refinement[1]==refinement[2]:
             return [refinement[1],getInter(a1[1],a2[1]),getInter(a1[2],a2[2])],XlabelString
         else:
             return ["Eps",getInter(a1[1],a2[1]),getInter(a1[2],a2[2])],XlabelString
-            
+
     if refinement[0]=="SAND":
         String1 = ""
         String2 = ""
@@ -197,38 +197,39 @@ def Refinement_Spec(listaction,refinement):
         for adict in getUnion(a1[2],a2[2]):
             String2+=" "+''.join('{}{}'.format(key, val) for key, val in adict.items())
         if String1 == "":
-            String1 = "Ø" 
+            String1 = "Ø"
         if String2 == "":
-            String2 = "Ø" 
+            String2 = "Ø"
         XlabelString=String1.replace("[","(").replace("]",")")+" , "+String2.replace("[","(").replace("]",")")
         if refinement[1]==refinement[2]:
             return [refinement[1],getUnion(a1[1],a2[1]),getUnion(a1[2],a2[2])],XlabelString
         else:
             return ["Eps",getUnion(a1[1],a2[1]),getUnion(a1[2],a2[2])],XlabelString
-            
-            
+
+
 ###########################Visualization Functions######################
-def visualizeTree(dot,tree,Epscount):
+def visualizeTree2(dot,tree,Epscount):
+
     if(singleNodeTree(tree)):
         #if the tree didn't have any further children, then return dot after creating the node with label
-        dot.node(tree.top,tree.top,xlabel=tree.XlabelString)
+        dot.node(tree.top,nodelabel,xlabel=tree.XlabelString)
         return dot
     topVertexName=tree.top #topVertexName is the name of the node for dot language
-    topVertexLabel=topVertexName #topVertexLabel represents the label in the dot language
+    topVertexLabel=nodelabel #topVertexLabel represents the label in the dot language
     if (topVertexName=='Eps'):
         #if the tree has the top node as 'Eps' change the name as 'Eps' followed by a count variable 'EpsCount'
         Epscount+=1 #Increment Eps count by 1
         topVertexName+=str(Epscount)
         topVertexLabel='ε' #Label as greek symbol
     dot.node(topVertexName,topVertexLabel,xlabel=tree.XlabelString) #add the node to dot file
-    
+
     #edgeLabels=[]
     childLabels=[]
     childCount=0
     for child in tree.child:
         #Every child can be a different tree and hence call visualize tree again which fetches the dot file after visualization
-        dot=visualizeTree(dot,child,Epscount) #pass child as a tree and Epscount with updated count
-        childLabel=child #child label is the label of the child tree, if the node is 
+        dot=visualizeTree2(dot,child,Epscount) #pass child as a tree and Epscount with updated count
+        childLabel=child #child label is the label of the child tree, if the node is
         if (childLabel=='Eps'):
             childLabel+=str(Epscount+1) #if the child label is Eps increase the Epscount by 1
         if (tree.relation=='SAND'):
@@ -241,27 +242,39 @@ def visualizeTree(dot,tree,Epscount):
             dot.edge(topVertexName,childLabel)
         childLabels.append(childLabel)
         childCount+=1
-    
-        
+
+
 #        for i in range(len(childLabels)-1):
 #            dot.edge(childLabels[i],childLabels[i+1])
     return dot
 
-def visualizeTree2(dot,tree):
-    print (tree.top)
+def visualizeTree(dot,tree):
+    nodelabel=tree.top
+    if(len(nodelabel)>40):
+        nodelabel=[nodelabel[i: i + 35] for i in range(0, len(nodelabel), 35)]
+        modifiednodelabel=""
+        for nl in nodelabel:
+            modifiednodelabel+=nl
+            modifiednodelabel+="\n"
+        nodelabel=modifiednodelabel
+    nodelabel=tree.top
+    print (nodelabel)
     if (hasattr(tree,'relation')):
-       print (tree.relation)
-       dot.node(tree.top,tree.top,xlabel=tree.relation)
+        print (tree.relation)
+        if tree.relation=='SAND':
+            dot.node(tree.top,'',xlabel=nodelabel,width='0.8',height='0.8', fixedsize='true',shape='none', image='AND_node.png')
+        else:
+            dot.node(tree.top,'',xlabel=nodelabel,width='0.8',height='0.8', fixedsize='true',shape='none', image='OR_node.png')
     else:
-       dot.node(tree.top,tree.top)
+       dot.node(tree.top,nodelabel,shape='record')
     if (hasattr(tree,'child')):
        for child in tree.child:
-          dot=visualizeTree2(dot,child)
+          dot=visualizeTree(dot,child)
           dot.edge(tree.top,child.top)
           print (child.top)
     return dot
-        
-            
+
+
 ###########################Set Functions#################################
 def cartesian_product(U,V):
     prod=[] #let prod be the resultant set that stores the cartesian product
@@ -273,9 +286,8 @@ def cartesian_product(U,V):
     #return the cartesian product
     return prod
 
-def union(lst1, lst2): 
+def union(lst1, lst2):
     #function to find the union of two lists.
     #first convert them to sets and perform union operation and finally change it back to List.
-    final_list = list(set(lst1) | set(lst2)) 
-    return final_list 
-
+    final_list = list(set(lst1) | set(lst2))
+    return final_list

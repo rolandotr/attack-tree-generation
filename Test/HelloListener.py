@@ -1,6 +1,6 @@
 # Generated from Hello.g4 by ANTLR 4.7.2
 from antlr4 import *
-import os 
+import os
 if __name__ is not None and "." in __name__:
     from .HelloParser import HelloParser
 else:
@@ -17,14 +17,14 @@ changeperactionpertraces=[]
 listT=[]
 listZ=[]
 strtype=""
-        
-            
-#fonction to determine given two list, if the second contain subtrace of the first.
-def containsubtrace(Trace,testtrace): 
 
-    result =  all(elem in testtrace  for elem in Trace) 
- 
-    if result:  
+
+#fonction to determine given two list, if the second contain subtrace of the first.
+def containsubtrace(Trace,testtrace):
+
+    result =  all(elem in testtrace  for elem in Trace)
+
+    if result:
         return True
     else :
         return False
@@ -45,26 +45,26 @@ def substitution(listT,strtype,listZ):
 # This class defines a complete listener for a parse tree produced by HelloParser.
 class HelloListener(ParseTreeListener):
 
-    
+
     # Enter a parse tree produced by HelloParser#r.
     def enterR(self, ctx:HelloParser.RContext):
-        
+
         pass
 
     # Exit a parse tree produced by HelloParser#r.
     # when we exit the parse tree, ze have all informations to remove traces
     def exitR(self, ctx:HelloParser.RContext):
-    
+
         Filea = ET.Element("Filea")
         # Traceid = ET.SubElement(Filea, "Traceid")
         # Action = ET.SubElement(Traceid,"Action")
         # e = ET.SubElement(Traceid,"e")
         # eprime= ET.SubElement(Traceid,"eprime")
-        
+
         ###Building the xml attack File
         global changeperactionpertraces
         global Tracelist
-        global stateVector 
+        global stateVector
         print(Tracelist)
         print(stateVector)
         counter=1
@@ -80,7 +80,7 @@ class HelloListener(ParseTreeListener):
                         if len(element[actions][0][2])!=0:
                             e=ET.SubElement(Action,"e")
                             for valuelista in element[actions]:
-                                print ("Line Removed")
+                                #print ("Line Removed")
                                 #ET.SubElement(e,"Change" ,Tuplename=str(valuelista[0]),value=str(substitution(['psw1','psw2'],"cred",valuelista[2])))
                                 #ET.SubElement(e,"Change" ,Tuplename=str(valuelista[0]),value=str(substitution(['psw1'],"psw",valuelista[2])))
                                 ET.SubElement(e,"Change" ,Tuplename=str(valuelista[0]), value=str(valuelista[2]))
@@ -90,22 +90,22 @@ class HelloListener(ParseTreeListener):
                         if len(element[actions][0][1])!=0:
                             eprime=ET.SubElement(Action,"eprime")
                             for valuelista in element[actions]:
-                                print ("Line Removed")
+                                #print ("Line Removed")
                                 #ET.SubElement(eprime,"Change" ,Tuplename=str(valuelista[0]),value=str(substitution(['psw1','psw2'],"Cred",valuelista[1])))
                                 #ET.SubElement(eprime,"Change" ,Tuplename=str(valuelista[0]),value=str(substitution(['psw1'],"psw",valuelista[1])))
                                 ET.SubElement(eprime,"Change" ,Tuplename=str(valuelista[0]), value=str(valuelista[1]))
                         else:
                             eprime=ET.SubElement(Action,"eprime",value="none")
-                        
+
         # ET.SubElement(doc, "field1", name="blah").text = "some value1"
         # ET.SubElement(doc, "field2", name="asdfasd").text = "some vlaue2"
-        
+
         tree = ET.ElementTree(Filea)
         os.remove("filename.xml")
         tree.write("filename.xml")
-            
-            
-            
+
+
+
         global TraceIdList
         subtracelist= []
         ActionTracekept =[]
@@ -121,13 +121,13 @@ class HelloListener(ParseTreeListener):
         for testtrace in Tracelist:
             if testtrace not in Trace:
                 Trace.append(testtrace)
-        # print(Trace)    
+        # print(Trace)
         print(Tracelist)
         for element1 in Tracelist:
             # print("\n \n============= "+str(Trace)+"\n we test element"+str(element1))
             # print("\n")
             for element2 in Tracelist:
-                
+
                 # print("avec"+str(element2))
                 # print("\n")
                 if element1 != element2:
@@ -143,14 +143,14 @@ class HelloListener(ParseTreeListener):
                                 continue
                     else:
                         if containsubtrace(element1,element2):
-                            
+
                             # print("Trying to remove"+str(element2))
                             try:
                                 Trace.remove(element2)
                                 # print("element removed")
                             except ValueError:
                                 continue
-              
+
         # print("\n we only Kept:")
         # print(Trace)
         # print("corresponding to Trace ID:")
@@ -170,23 +170,23 @@ class HelloListener(ParseTreeListener):
             for line in f:
                 SameTrace=True
                 while SameTrace:
-                    
+
                         try:
                             if int(line)!=1:
                                 traceintext=[]
-                                
+
                                 traceintext.append(line)
                                 tracesintext.append(traceintext)
                                 if  str(int(line)) in TracetoKeep:
                                     tracetokeeptext.append(traceintext)
-                            else: 
+                            else:
                                 traceintext=[]
                                 traceintext.append(line)
                                 tracesintext.append(traceintext)
                                 if  str(int(line)) in TracetoKeep:
                                     tracetokeeptext.append(traceintext)
                             SameTrace=False
-                                
+
                             break
                         except ValueError:
                             traceintext.append(line)
@@ -194,18 +194,20 @@ class HelloListener(ParseTreeListener):
         # print("\n")
         # print("we will write in a new file :")
         newtracecount=1
-
+        allElements=[]
         with open("Tracelistfinal.txt",'w') as f:
             for element in tracetokeeptext:
-                f.writelines(str(newtracecount)+"\n")
-                f.writelines(element[1:]) 
-                newtracecount+=1
+                if element[1:] not in allElements:
+                    allElements.append(element[1:])
+                    f.writelines(str(newtracecount)+"\n")
+                    f.writelines(element[1:])
+                    newtracecount+=1
         # for element in tracetokeeptext:
             # print(element)
             # print("\n")
         global finalstateValue
-        
-        
+
+
         global TupleNamelist
         global ActionNameList
         global TraceIdList
@@ -222,14 +224,14 @@ class HelloListener(ParseTreeListener):
         changeperactionpertraces=[]
         listT=[]
         listZ=[]
-        strtype=""    
+        strtype=""
         pass
     # Enter a parse tree produced by HelloParser#traces.
     def enterTraces(self, ctx:HelloParser.TracesContext):
         counter=0
         global changeperactionpertraces
         changeperaction={}
-        for element in ctx.trace():   
+        for element in ctx.trace():
 
             if element.trans()!=None:
                 Tuplelistafter=[]
@@ -240,17 +242,17 @@ class HelloListener(ParseTreeListener):
                     for el in p.tupledecl():
                         Valuelist.append([ele.getText() for ele in el.Value()])
                     Tuplelist.append([p.Tuplename().getText(),Valuelist])
-                    
-                #we build the list containing all state value before an action    
+
+                #we build the list containing all state value before an action
                 for p in ctx.trace()[counter+1].status().tupleallDecl():
                     Valuelist=[]
                     for el in p.tupledecl():
                         Valuelist.append([ele.getText() for ele in el.Value()])
                     Tuplelistafter.append([p.Tuplename().getText(),Valuelist])
-                    
+
                 ActionUpdate=[]
                 for Tuplebefore,Tupleafter in zip(Tuplelist,Tuplelistafter):
-                      
+
                     first_set = set(map(tuple, Tuplebefore[1]))
                     secnd_set = set(map(tuple, Tupleafter[1]))
                     e=list(secnd_set-first_set)
@@ -259,12 +261,12 @@ class HelloListener(ParseTreeListener):
                         if len(eprime)==0:
                             continue
                     else:
-                        ActionUpdate.append([Tuplebefore[0],e,eprime])              
+                        ActionUpdate.append([Tuplebefore[0],e,eprime])
                 changeperaction[element.trans().ActionName().getText()]=ActionUpdate
-                
-                
+
+
             counter+=1
-        changeperactionpertraces.append(changeperaction)     
+        changeperactionpertraces.append(changeperaction)
         pass
 
     # Exit a parse tree produced by HelloParser#traces.
@@ -278,7 +280,7 @@ class HelloListener(ParseTreeListener):
         stateVector.append([{ctx.traceid().getText():TupleNamelist},ActionNameList])
         TupleNamelist=[]
         ActionNameList=[]
-        
+
         pass
 
 
@@ -301,14 +303,14 @@ class HelloListener(ParseTreeListener):
                 Valuelist=[]
                 for el in p.tupledecl():
                    Valuelist.append([ele.getText() for ele in el.Value()])
-                TupleNamelist.append([p.Tuplename().getText(),Valuelist])   
-                
-                    
+                TupleNamelist.append([p.Tuplename().getText(),Valuelist])
+
+
         pass
 
     # Exit a parse tree produced by HelloParser#trace.
     def exitTrace(self, ctx:HelloParser.TraceContext):
-      
+
         pass
 
 
@@ -343,10 +345,9 @@ class HelloListener(ParseTreeListener):
     def enterTrans(self, ctx:HelloParser.TransContext):
         global ActionNameList
         ActionNameList.append(str(ctx.ActionName()))
-        
+
         pass
 
     # Exit a parse tree produced by HelloParser#trans.
     def exitTrans(self, ctx:HelloParser.TransContext):
         pass
-            

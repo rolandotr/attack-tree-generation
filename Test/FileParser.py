@@ -19,28 +19,36 @@ from pprint import pprint
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showerror
+from tkinter.ttk import Progressbar
+
 
 #####Trace Generation#######
 
 os.chdir("C:/Users/dnagumot/xampp/htdocs/attack_trees/attack-tree-generation/Test")
-log_file = open("logfile.txt","w") 
+log_file = open("logfile.txt","w")
 
 
-def generateTrace(aDict):
+def generateTrace(aDict,frame):
 # '''
 # we generate traces for every action contained in the mcrl2 specification file. we do this to make sure we don't miss any action in the traces
 # so the first things we have to do is to parse the mcrl2 file to gather the action and the parameter as we need those to generate the traces.'''
-
-    ###we all compute the msf File ####        
+    ###we all compute the msf File ####
     try:
         shutil.rmtree("msffile/")
     except FileNotFoundError:
         print("first time Tracelist.txt is generated")
-    os.mkdir('msffile') 
-    os.chdir("msffile/")              
+    os.mkdir('msffile')
+    os.chdir("msffile/")
     print("Creating Trace-generation Formula ")
     sys.stdout.flush()
     log_file.write("12%\n")
+    ###Frame output
+    frame.label=Label(frame, text = 'Creating Trace-generation Formula',font =('Verdana', 12))
+    frame.label.grid(row=6, column=2, sticky=W)
+    frame.progress_bar['value']=12
+    frame.update_idletasks()
+
+    ###Frame output
     i=65
     for action in aDict.keys():
         #to label the variable, we use letter of alphabet+ number of variable
@@ -74,7 +82,7 @@ def generateTrace(aDict):
             print(stringtowrite)
             with open(action+".msf",'w')as f:
                 f.write(stringtowrite)
-                
+
     os.chdir("..")
     os.system('mcrl22lps '+sys.argv[1]+' ATM.lps')
     fl=os.listdir("msffile/")
@@ -83,63 +91,76 @@ def generateTrace(aDict):
         shutil.rmtree("pbesfile/")
     except FileNotFoundError:
         print("first time pbes.txt is generated")
-    os.mkdir('pbesfile') 
-    
+    os.mkdir('pbesfile')
+
     for element in fl:
         os.system('lps2pbes -c -f '+'msffile/'+element+' ATM.lps '+'pbesfile/'+element[:-4]+'.pbes')
-      
-    #### we compute all the new lpsfile #### 
-    fl=os.listdir("pbesfile/")  
+
+    #### we compute all the new lpsfile ####
+    fl=os.listdir("pbesfile/")
 
     try:
         shutil.rmtree("lpsfile/")
     except FileNotFoundError:
         print("first time pbes.txt is generated")
-        
+
     os.mkdir('lpsfile')
     output=[]
     print("Solving Formula ")
     sys.stdout.flush()
     log_file.write("25%\n")
+    ###Frame output
+    frame.label=Label(frame, text = 'Solving Formula',font =('Verdana', 12))
+    frame.label.grid(row=7, column=2, sticky=W)
+    frame.progress_bar['value']=25
+    frame.update_idletasks()
+    ###Frame output
     for element in fl:
         print('solving : ',element)
         print('pbessolve  -f '+'ATM.lps '+'pbesfile/'+element+' --evidence-file='+'lpsfile/'+element[:-4]+'lps')
         os.system('pbessolve  -f '+'ATM.lps '+'pbesfile/'+element +' --evidence-file='+'lpsfile/'+element[:-4]+'lps' )
 
-    fl=os.listdir("lpsfile/") 
+    fl=os.listdir("lpsfile/")
     print(fl)
 
     print("Trace Generation")
     sys.stdout.flush()
     log_file.write("45%\n")
+    ###Frame output
+    frame.label=Label(frame, text = 'Trace Generation',font =('Verdana', 12))
+    frame.label.grid(row=8, column=2, sticky=W)
+    frame.progress_bar['value']=45
+    frame.update_idletasks()
+    ###Frame output
     ##### trace generation like before but on lps containing evidences######
     try:
         shutil.rmtree("trcfiles/")
     except FileNotFoundError:
-        print("first time trcfiles.txt is generated")       
+        print("first time trcfiles.txt is generated")
     os.mkdir('trcfiles')
     for element in fl:
         output.append(sub.getoutput('lps2lts --action=final -t lpsfile/'+element))
-        
-    filetomove=[]  
+
+    filetomove=[]
     for file in os.listdir("lpsfile/"):
         if file.endswith(".trc"):
-            filetomove.append(file) 
+            filetomove.append(file)
 
-    
+
     for file in filetomove:
-        shutil.move("lpsfile/"+file, "trcfiles/")  
+        shutil.move("lpsfile/"+file, "trcfiles/")
 
-            
+
     print("yo")
     try:
         os.remove("Tracelist.txt")
     except FileNotFoundError:
         print("first time Tracelist.txt is generated")
-        
+
     #Storing in a list all output of tracepp of each TRT files as follow
     #Tracelist[Trace1,Trace2,Trace3,...,Tracen]
-        
+
+    print("\n\n")
     fl=os.listdir('trcfiles/')
     Tracelist=[]
     for file in fl:
@@ -154,34 +175,40 @@ def generateTrace(aDict):
             # print("\n"+element+"\n")
             Traceid+=1
             # print("we are here")
-            f.writelines(str(Traceid)+ "\n"+element+"\n")   
-    print("Traces Generation Done ") 
+            f.writelines(str(Traceid)+ "\n"+element+"\n")
+    print("Traces Generation Done ")
     sys.stdout.flush()
     log_file.write("50%\n")
+    ###Frame output
+    frame.label=Label(frame, text = 'Trace Generation Done',font =('Verdana', 12))
+    frame.label.grid(row=9, column=2, sticky=W)
+    frame.progress_bar['value']=50
+    frame.update_idletasks()
+    ###Frame output
 dot = Digraph(comment = 'Trace generated attack Tree')
 
 
 def Verticedegree(U,V,E):
-    
+
     listdegree=[]
     for vertice in U:
-        degree=0 
+        degree=0
         for edge in E:
             if vertice == edge[0]:
                 degree +=1
         if [vertice,degree] not in listdegree:
-            listdegree.append([vertice,degree]) 
-            
+            listdegree.append([vertice,degree])
+
     for vertice in V:
-        degree=0 
+        degree=0
         for edge in E:
             if vertice == edge[0]:
                 degree +=1
         if [vertice,degree] not in listdegree:
             listdegree.append([vertice,degree])
     return listdegree
-    
-       
+
+
 def pickmaxdegreeVertice(listdegree,Z):
     u=''
     max=0
@@ -190,7 +217,7 @@ def pickmaxdegreeVertice(listdegree,Z):
         if element[1]>max:
             max=element[1]
     for element in listdegree:
-        
+
         if element[1]==max:
             possibleu.append(element[0])
     u=random.choice(possibleu)
@@ -206,27 +233,27 @@ def pickmaxdegreeVertice(listdegree,Z):
                         possibleu.append(element[0])
                 lowermax+=1
     return u
-        
-        
-def colorGraph(G, color, pos, c): 
-    
-    if color[pos] != -1 and color[pos] != c: 
+
+
+def colorGraph(G, color, pos, c):
+
+    if color[pos] != -1 and color[pos] != c:
         return False
-    color[pos] = c 
+    color[pos] = c
     ans = True
-    for i in range(0, len(G)): 
-        if G[pos][i]: 
-            if color[i] == -1: 
-                ans &= colorGraph(G, color, i, 1-c) 
-                
-            if color[i] !=-1 and color[i] != 1-c: 
+    for i in range(0, len(G)):
+        if G[pos][i]:
+            if color[i] == -1:
+                ans &= colorGraph(G, color, i, 1-c)
+
+            if color[i] !=-1 and color[i] != 1-c:
                 return False
-        
-        if not ans: 
+
+        if not ans:
             return False
-    
+
     return True
-                                      
+
 def buildgraph(X,Y,E):
     grapharray= np.zeros((len(X)+len(Y),len(X)+len(Y)))
     index=0
@@ -238,22 +265,22 @@ def buildgraph(X,Y,E):
             indey+=1
         index+=1
     return(grapharray)
-      
+
 def isBipartite(X,Y,E):
     grapharray=buildgraph(X,Y,E)
-    color = [-1] *(len(X)+len(Y))   
-    pos = 0 
-    return colorGraph(grapharray, color, pos, 1)  
+    color = [-1] *(len(X)+len(Y))
+    pos = 0
+    return colorGraph(grapharray, color, pos, 1)
 
 def isConnected(graphG,vertice_encoutered=None,start_vertex=None):
-    """ 
+    """
     The algorithm is the following : we pick a random vertice and we define a set containing him and all reachable vertice
     if len(set) len(graphG.Vertice) ===> graph is connected
     """
-    
+
     if vertice_encoutered is None:
         vertice_encoutered = set()
-    
+
     Vertices=[]
     Vertices.extend(graphG[0])
     Vertices.extend(graphG[1])
@@ -266,7 +293,7 @@ def isConnected(graphG,vertice_encoutered=None,start_vertex=None):
             for action in edge:
                 if action  != start_vertex:
                     linkedvertice.append(action)
-                    
+
     if len(vertice_encoutered)!= len(Vertices):
         for vertice in linkedvertice:
             if vertice not in vertice_encoutered:
@@ -275,9 +302,9 @@ def isConnected(graphG,vertice_encoutered=None,start_vertex=None):
     else:
         return True
     return False
-  
+
 def Biclique(X,Y,E):
-    # This fonction take as input 2 list of Vertice and a list of edge, it should be use after the Decomposition algorithm otherwise if the graph is not Connected, the output is random 
+    # This fonction take as input 2 list of Vertice and a list of edge, it should be use after the Decomposition algorithm otherwise if the graph is not Connected, the output is random
     Z=[]
     G=[X,Y,E]
     futurWprime=X
@@ -286,7 +313,7 @@ def Biclique(X,Y,E):
 
     while (isBipartite(G[0],G[1],G[2])==False )or (isConnected(G)==False):
         W=[]
-        u=pickmaxdegreeVertice(Verticedegree(G[0],G[1],G[2]),Z) # we pick an action with a maximum degree in the graph     
+        u=pickmaxdegreeVertice(Verticedegree(G[0],G[1],G[2]),Z) # we pick an action with a maximum degree in the graph
         if u in G[0]:
             W=G[1]
             Wprime=G[0]
@@ -304,7 +331,7 @@ def Biclique(X,Y,E):
                 for edge in E: #We remove edges linked to removed Vertices
                     if subtrace in edge:
                         edgetoRemove.append(edge)
-   
+
         # we effectively remove the previously calculated vertices and edges
         for element in VerticetoremoveinW:
             W.remove(element)
@@ -313,7 +340,7 @@ def Biclique(X,Y,E):
         # we want to remove isolated Vertices
         removeisolated=[]
         futurWprime=Wprime
-        for vertice in Wprime:  # we compute the isolated Vertice 
+        for vertice in Wprime:  # we compute the isolated Vertice
             isisolated=True
             for edge in newEdge:
                 if vertice in edge:
@@ -321,32 +348,32 @@ def Biclique(X,Y,E):
             if isisolated:
                 removeisolated.append(vertice)
         futurW=W
-        for vertice in W: # we compute the isolated Vertice 
+        for vertice in W: # we compute the isolated Vertice
             isisolated=True
             for edge in newEdge:
-                
+
                 if vertice in edge:
                     isisolated=False
             if isisolated:
-                removeisolated.append(vertice)   
+                removeisolated.append(vertice)
         for element in removeisolated:  # we remove the isolated Vertice
             if element in futurW:
                 futurW.remove(element)
             if element in futurWprime:
                 futurWprime.remove(element)
         Z.append(u)
-    return[futurWprime,futurW,newEdge]     
-    
+    return[futurWprime,futurW,newEdge]
+
 def getMaxEdgeCC(graphG):
-   
+
     vertice_encoutered = set()
-    
+
     Verticestoexplore=[]
     Verticestoexplore.extend(graphG[0])
     Verticestoexplore.extend(graphG[1])
-    
+
     listofCC=[]
-        
+
     sVerticestoexplore=set(Verticestoexplore)
     while sVerticestoexplore:
         # print("while1")
@@ -370,7 +397,7 @@ def getMaxEdgeCC(graphG):
                     queue.append(element)
         listofCC.append(group)
     # print("listofCC")
-    # print(listofCC)    
+    # print(listofCC)
     # print("\n")
     return listofCC
 
@@ -392,7 +419,7 @@ def convertAttackToStrings(d):
        actionLabels=[]
        for action in attack.actions:
           actionLabels.append(action.label)
-       graphs.append(actionLabels)   
+       graphs.append(actionLabels)
     return graphs
 def getAttacksFromLabels(U,d):
     returnAttacks=[]
@@ -435,7 +462,7 @@ def Decomposition2(d):
             if ' '.join(trace[0:i])+'l' not in Unamed:
                 U.append(trace[0:i])
                 Unamed.append(' '.join(trace[0:i])+'l')
-            if ' '.join(trace[i:])+'r' not in Vnamed :   
+            if ' '.join(trace[i:])+'r' not in Vnamed :
                 V.append(trace[i:])
                 Vnamed.append(' '.join(trace[i:])+'r')
     index=0
@@ -449,7 +476,7 @@ def Decomposition2(d):
                     E.append([Unamed[index],Vnamed[index2]])
             index2+=1
         index+=1
-    #rebuild SPsem  
+    #rebuild SPsem
     #print ('Edges', E)
     if isConnected([Unamed,Vnamed,E]):
         Gprime=Biclique(Unamed,Vnamed,E)
@@ -478,10 +505,10 @@ def Decomposition2(d):
         # print("voila les nouvelle edge")
         # print(newE)
         Gprime=Biclique(Unamed,Vnamed,newE)
-        
+
             # if x for x in action[:-1].split().append(y for y in action2[:-1].split()) not in rebuildSpsem:
                 # rebuildSpsem.append([action[:-1].split(),action2[:-1].split()])
-     
+
     #eliminateredundant
     UVDot=[]
     Unew=removeLastLetter(Gprime[0])
@@ -501,7 +528,7 @@ def Decomposition2(d):
           for item in splitter:
              jlist.append(item)
        UVDot[i]=jlist
-   
+
     #print ('UVDotNow',UVDot)
 
     #print ('UVDot New',UVDot)
@@ -519,7 +546,7 @@ def Decomposition2(d):
           #   ilist.append(i)
        Unew=ilist
        print ('Unew', Unew)
-       #print ('Vnew', Vnew)  
+       #print ('Vnew', Vnew)
        dUnew=getAttacksFromLabels(Unew,d)
        print (dUnew)
 
@@ -528,21 +555,22 @@ def Decomposition2(d):
           splitter=item.split();
           ilist.append(splitter)
        Vnew=ilist
-       print ('Vnew', Vnew)  
+       print ('Vnew', Vnew)
        dVnew=getAttacksFromLabels(Vnew,d)
-       print ('Vnew',dVnew)               
-       SPLeft=Decomposition2(dUnew)
-       SPRight=Decomposition2(dVnew)
+       print ('Vnew',dVnew)
+       return (dUnew,dVnew)
+       #SPLeft=Decomposition2(dUnew)
+       #SPRight=Decomposition2(dVnew)
     #print ('Left',Gprime[0])
     #print ('Right',Gprime[1])
     #return [Gprime[0],Gprime[1]]
-       return (SPLeft,SPRight)
-    
-    
+       #return (SPLeft,SPRight)
+
+
 def Decomposition(SPsem):
     print('Decomposition New:')
     print(SPsem)
-    
+
     G=[[],[],[]]
     U=[]
     V=[]
@@ -567,7 +595,7 @@ def Decomposition(SPsem):
             if ' '.join(trace[0:i])+'l' not in Unamed:
                 U.append(trace[0:i])
                 Unamed.append(' '.join(trace[0:i])+'l')
-            if ' '.join(trace[i:])+'r' not in Vnamed :   
+            if ' '.join(trace[i:])+'r' not in Vnamed :
                 V.append(trace[i:])
                 Vnamed.append(' '.join(trace[i:])+'r')
     index=0
@@ -581,7 +609,7 @@ def Decomposition(SPsem):
                     E.append([Unamed[index],Vnamed[index2]])
             index2+=1
         index+=1
-    #rebuild SPsem  
+    #rebuild SPsem
     #print ('Edges', E)
     if isConnected([Unamed,Vnamed,E]):
         Gprime=Biclique(Unamed,Vnamed,E)
@@ -610,10 +638,10 @@ def Decomposition(SPsem):
         # print("voila les nouvelle edge")
         # print(newE)
         Gprime=Biclique(Unamed,Vnamed,newE)
-        
+
             # if x for x in action[:-1].split().append(y for y in action2[:-1].split()) not in rebuildSpsem:
                 # rebuildSpsem.append([action[:-1].split(),action2[:-1].split()])
-     
+
     #eliminateredundant
     UVDot=[]
     Unew=removeLastLetter(Gprime[0])
@@ -633,7 +661,7 @@ def Decomposition(SPsem):
           for item in splitter:
              jlist.append(item)
        UVDot[i]=jlist
-   
+
     #print ('UVDotNow',UVDot)
 
     #print ('UVDot New',UVDot)
@@ -661,14 +689,14 @@ def Decomposition(SPsem):
              ilist.append(i)
        Vnew=ilist
        print ('Unew', Unew)
-       print ('Vnew', Vnew)          
+       print ('Vnew', Vnew)
        SPLeft=Decomposition(Unew)
        SPRight=Decomposition(Vnew)
     #print ('Left',Gprime[0])
     #print ('Right',Gprime[1])
     #return [Gprime[0],Gprime[1]]
        return [SPLeft,SPRight]
-    
+
 
 def removeLastLetter(U):
     tempList=[]
@@ -679,15 +707,15 @@ def removeLastLetter(U):
 
 
 
-             
-def buildtree(Filename):
+
+def buildtree(Filename,frame):
     #this fonction take in input a xml File
     #we want a Sp sematic and a refinement to call Gen_bin_tree
     pilist=[]
-    tree = ET.parse(Filename)  
+    tree = ET.parse(Filename)
     root = tree.getroot()
     #Spsem
-    for elem in root: 
+    for elem in root:
         #print ('Elem-',elem)
 
         E=[]
@@ -705,9 +733,9 @@ def buildtree(Filename):
     # casestudy=[['w','ec','l'],['b','l'],['x','l']]
     # Decomposition(casestudy)
     listdict=[]
-    for elem in root: 
+    for elem in root:
         E=[]
-        predicatdict={} 
+        predicatdict={}
         # print(elem.tag)
         for action in elem:
             #print('Action Tag',action.attrib)
@@ -717,7 +745,7 @@ def buildtree(Filename):
                 # print(list(s.attrib.values()))
                 #print('S',s)
                 if len(list(s.attrib.values()))==0 :
-                    
+
                     # print("i'm here")
                     #print('S Tag',s.tag)
                     if s.tag =='e':
@@ -729,13 +757,13 @@ def buildtree(Filename):
                     if s.tag =='eprime':
                         for change in  s :
                             # print("ici pepe")
-                            print('Change Tag',change.attrib)
+                            #print('Change Tag',change.attrib)
                             eprime.append({list(change.attrib.values())[0]:list(change.attrib.values())[1]})
             # print(list(action.attrib.values())[0].replace('-',""))
             # print("will be the key of ")
             # print(e)
             # print(eprime)
-            predicatdict[list(action.attrib.values())[0].replace('-',"")]=[e,eprime]  
+            predicatdict[list(action.attrib.values())[0].replace('-',"")]=[e,eprime]
         listdict.append(predicatdict)
     print ('List Dict')
     pprint (listdict)
@@ -759,12 +787,12 @@ def buildtree(Filename):
     print(pilist2)
 
     pilist=convertListSeq(pilist)
-   
+
     print('Changing init knows ---- ')
     #listdict[2]['exploiting'][1][1]['init_knows1']=listdict[2]['exploiting'][1][1]['init_knows']
     #del listdict[2]['exploiting'][1][1]['init_knows']
     #print (listdict[2]['loggingInRem'])
-    print('Changed init knows ---- ')    
+    print('Changed init knows ---- ')
 
     stores1=Predicate('stores',['psw1'])
     knows1=Predicate('knows',['psw1'])
@@ -780,12 +808,28 @@ def buildtree(Filename):
     start=Action('start',[],[locatedA])
     eaves=Action('eavesdropping',[],[knows])
     A3=Attack([start,eaves,logging])
-    #A3=Attack([eaves,logging])    
-    d=[A1,A2,A3]
+    #A3=Attack([eaves,logging])
+    dFixed=[A1,A2,A3]
     P=[stores1,knows1,locatedM,knows,locatedA]
     ## tree generation ###
     #d=convertListDict(listdict)
     d=convertDict(pilist2,listdict)
+
+    print ("d")
+    print (d)
+
+    print("\n\n\n")
+
+    print('Fixed Attacks')
+    for attack in dFixed:
+       print (attack)
+       for action in attack.actions:
+          print(action.label)
+          if hasattr(action,'params'):
+             print ('Params:',action.params)
+          for event in action.eprime:
+            print(event.key,event.params)
+
     print('After Conversion')
     for attack in d:
        print (attack)
@@ -795,28 +839,36 @@ def buildtree(Filename):
              print ('Params:',action.params)
           for event in action.eprime:
             print(event.key,event.params)
-             
 
+    #sys.exit()
+    print("\n")
 
     print("Building Tree" )
     sys.stdout.flush()
     log_file.write("80%\n")
-    
-    #remove last element for experiment
-    d = d[:-2]
 
-    
-    tree=genminmaxtree2(d,P)
+    ###Frame output
+    frame.label=Label(frame, text = 'Building Tree',font =('Verdana', 12))
+    frame.label.grid(row=10, column=2, sticky=W)
+    frame.progress_bar['value']=80
+    frame.update_idletasks()
+    ###Frame output
+
+    tree=genminmaxtree(d,P)
+
     #btree=genbintree(pilist,P)
+
     print("Tree Built " )
     log_file.write("100%\n")
     sys.stdout.flush()
     log_file.close();
     ### tree printing ###
-    dot=Digraph(comment='Min Max Tree', format='jpg')
-    dot=visualizeTree2(dot,tree)
-    #print (dot.source)
-    dot.render('Bin Tree.gv', view=True)
+    dot=Digraph(comment='Min Max Tree', graph_attr={'nodesep':'2','ranksep':'1.2'}, format='jpg')
+    dot=visualizeTree(dot,tree)
+    print (dot.source)
+    dot.render('Min Max Tree.gv', view=True)
+
+
 
 def convertDict(pilist,listdict):
     print ("Converting Dictionary")
@@ -876,8 +928,8 @@ def convertDict(pilist,listdict):
           actionsInAttack.append(actionObjects[actionIndex])
        d.append(Attack(actionsInAttack))
     return d
-         
- 
+
+
 def convertListDict(listdict):
     d=[]
     actionLabels=[]
@@ -888,7 +940,7 @@ def convertListDict(listdict):
     print ('Converting List Dict')
     #print(len(listdict))
     for dict in listdict:
-       #pprint(dict) 
+       #pprint(dict)
        actionObjects=[]
        for key in dict.keys():
           #print(keys)
@@ -914,7 +966,7 @@ def convertListDict(listdict):
                            matched=True
                            eprime.append(allevents[i])
                       if(matched==False):
-                         eventObject=Predicate(eventkey,event[eventkey]) 
+                         eventObject=Predicate(eventkey,event[eventkey])
                          allevents.append(eventObject)
                          eprime.append(eventObject)
             print('Length of each action:',len(eprime))
@@ -924,11 +976,11 @@ def convertListDict(listdict):
             actionLabels.append(key)
           else:
              index=actionLabels.index(key)
-             actionObjects.append(allactions[index]) 
+             actionObjects.append(allactions[index])
        print('Length of Action Objects',len(actionObjects))
-       d.append(actionObjects) 
+       d.append(actionObjects)
     return d
-    
+
 def mcrl2Parsing(Filename):
     # for a given Mcrl2 specification File, create an xml file containing all the action and the type associated to it, the return the dictionnary
     input = FileStream(Filename) #Read input from the file
@@ -941,28 +993,37 @@ def mcrl2Parsing(Filename):
     printer = McrlListener()
     walker = ParseTreeWalker()
     walker.walk(printer, tree)
-    actiondict=Buildtracedict("dict.xml") 
+    actiondict=Buildtracedict("dict.xml")
     return actiondict
 def Buildtracedict(Filename):
     Actiondict={}
-    tree = ET.parse(Filename)  
+    tree = ET.parse(Filename)
     root = tree.getroot()
     #Spsem
-    for elem in root: 
-        
+    for elem in root:
+
         Actiondict["".join(elem.attrib.values())]=["".join(subelem.attrib.values()) for subelem in elem ]
     return Actiondict
-    
-def main(argv):
+
+def main(argv,frame):
     print("Mcrl2 parsing\n")
+    print (argv)
     log_file.write("0% \n")
     sys.stdout.flush()
+    #frame.label=Label(frame, text = 'Mcrl2 parsing',font =('Verdana', 12))
+    #frame.label.grid(row=4, column=2, sticky=W)
+    #frame.update_idletasks()
     actiondict=mcrl2Parsing(argv[1])
     print("generating Traces")
     sys.stdout.flush()
     log_file.write("10% \n")
-    generateTrace(actiondict)
+    frame.label=Label(frame, text = 'Generating Traces',font =('Verdana', 12))
+    frame.label.grid(row=5, column=2, sticky=W)
+    frame.progress_bar['value']=10
+    frame.update_idletasks()
+    generateTrace(actiondict,frame)
     ##first round of parsing to generate tracelist###
+    print("first round of parsing")
     input = FileStream("Tracelist.txt")
     lexer = HelloLexer(input)
     stream = CommonTokenStream(lexer)
@@ -993,7 +1054,11 @@ def main(argv):
     shutil.rmtree("msffile/")
     shutil.rmtree("pbesfile/")
     shutil.rmtree("trcfiles/")
-    buildtree("filename.xml")
+    buildtree("filename.xml",frame)
+    frame.label=Label(frame, text = 'Attack Tree Generated',font =('Verdana', 15))
+    frame.label.grid(row=14, column=2, sticky=W)
+    frame.progress_bar['value']=100
+
     return True
 
 class MyFrame(Frame):
@@ -1011,20 +1076,25 @@ class MyFrame(Frame):
         self.button = Button(self, text="Browse", command=self.load_file, width=10)
         self.button.grid(row=2, column=2, sticky=W)
 
+
     def load_file(self):
         fname = askopenfilename(filetypes=(("Specification file", "*.mcrl2"),))
+        print (self)
         if fname:
-            sys.argv.append(fname)
+            self.progress_bar=Progressbar(self, orient='horizontal', length=300, mode='determinate')
+            self.progress_bar.grid(row=3, column=2, sticky=W)
+            if(len(sys.argv)<2):
+                sys.argv.append(fname)
+            else:
+                sys.argv[1]=fname
             try:
-                main(sys.argv)
-                self.label=Label(self, text = 'Traces Generated',font =('Verdana', 15))
-                self.label.grid(row=3, column=2, sticky=W)
+                main(sys.argv,self)
+                #self.button.destroy();
+
             except:                     # <- naked except is a bad idea
-                showerror("Open Source File", "Failed to read file\n'%s'" % fname)
+                showerror("Open Source File", "Failed to read file\n'%s'. Please Try Again!" % fname)
             return
-	    
 
 if __name__ == "__main__":
-    #MyFrame().mainloop()
-    main(sys.argv)
-    
+    MyFrame().mainloop()
+    #main(sys.argv)

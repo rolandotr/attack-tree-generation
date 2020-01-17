@@ -1,0 +1,25 @@
+// Min Max Tree
+digraph {
+	graph [nodesep=2 ranksep=1.2]
+	"([],init_located([('Mallory,', 'Server')],))" [label="" fixedsize=true height=0.8 image="OR_node.png" shape=none width=0.8 xlabel="([],init_located([('Mallory,', 'Server')],))"]
+	"([],init_located([('Mallory,', 'Server')],)init_knows([('Mallory,', 'psw2')],)init_stores([('Server,', 'psw2')],))" [label="" fixedsize=true height=0.8 image="AND_node.png" shape=none width=0.8 xlabel="([],init_located([('Mallory,', 'Server')],)init_knows([('Mallory,', 'psw2')],)init_stores([('Server,', 'psw2')],))"]
+	"([],init_stores([('Server,', 'psw2')],)init_knows([('Mallory,', 'psw2')],))exploiting" [label="([],init_stores([('Server,', 'psw2')],)init_knows([('Mallory,', 'psw2')],))exploiting" shape=record]
+	"([],init_located([('Mallory,', 'Server')],)init_knows([('Mallory,', 'psw2')],)init_stores([('Server,', 'psw2')],))" -> "([],init_stores([('Server,', 'psw2')],)init_knows([('Mallory,', 'psw2')],))exploiting"
+	"([],init_located([('Mallory,', 'Server')],))loggingInRempswb" [label="([],init_located([('Mallory,', 'Server')],))loggingInRempswb" shape=record]
+	"([],init_located([('Mallory,', 'Server')],)init_knows([('Mallory,', 'psw2')],)init_stores([('Server,', 'psw2')],))" -> "([],init_located([('Mallory,', 'Server')],))loggingInRempswb"
+	"([],init_located([('Mallory,', 'Server')],))" -> "([],init_located([('Mallory,', 'Server')],)init_knows([('Mallory,', 'psw2')],)init_stores([('Server,', 'psw2')],))"
+	"([],init_located([('Mallory,', 'Server')],)init_knows([('Mallory,', 'psw1')],)init_located([('Alice,', 'Client')],))" [label="" fixedsize=true height=0.8 image="AND_node.png" shape=none width=0.8 xlabel="([],init_located([('Mallory,', 'Server')],)init_knows([('Mallory,', 'psw1')],)init_located([('Alice,', 'Client')],))"]
+	"([],init_knows([('Mallory,', 'psw1')],))" [label="" fixedsize=true height=0.8 image="OR_node.png" shape=none width=0.8 xlabel="([],init_knows([('Mallory,', 'psw1')],))"]
+	"([],init_knows([('Mallory,', 'psw1')],))bruteforcingPsw" [label="([],init_knows([('Mallory,', 'psw1')],))bruteforcingPsw" shape=record]
+	"([],init_knows([('Mallory,', 'psw1')],))" -> "([],init_knows([('Mallory,', 'psw1')],))bruteforcingPsw"
+	"([],init_knows([('Mallory,', 'psw1')],)init_located([('Alice,', 'Client')],))" [label="" fixedsize=true height=0.8 image="AND_node.png" shape=none width=0.8 xlabel="([],init_knows([('Mallory,', 'psw1')],)init_located([('Alice,', 'Client')],))"]
+	"([],init_located([('Alice,', 'Client')],))startTerm" [label="([],init_located([('Alice,', 'Client')],))startTerm" shape=record]
+	"([],init_knows([('Mallory,', 'psw1')],)init_located([('Alice,', 'Client')],))" -> "([],init_located([('Alice,', 'Client')],))startTerm"
+	"([],init_knows([('Mallory,', 'psw1')],))eavesdropping" [label="([],init_knows([('Mallory,', 'psw1')],))eavesdropping" shape=record]
+	"([],init_knows([('Mallory,', 'psw1')],)init_located([('Alice,', 'Client')],))" -> "([],init_knows([('Mallory,', 'psw1')],))eavesdropping"
+	"([],init_knows([('Mallory,', 'psw1')],))" -> "([],init_knows([('Mallory,', 'psw1')],)init_located([('Alice,', 'Client')],))"
+	"([],init_located([('Mallory,', 'Server')],)init_knows([('Mallory,', 'psw1')],)init_located([('Alice,', 'Client')],))" -> "([],init_knows([('Mallory,', 'psw1')],))"
+	"([],init_located([('Mallory,', 'Server')],))loggingInRempswa" [label="([],init_located([('Mallory,', 'Server')],))loggingInRempswa" shape=record]
+	"([],init_located([('Mallory,', 'Server')],)init_knows([('Mallory,', 'psw1')],)init_located([('Alice,', 'Client')],))" -> "([],init_located([('Mallory,', 'Server')],))loggingInRempswa"
+	"([],init_located([('Mallory,', 'Server')],))" -> "([],init_located([('Mallory,', 'Server')],)init_knows([('Mallory,', 'psw1')],)init_located([('Alice,', 'Client')],))"
+}

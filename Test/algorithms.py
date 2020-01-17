@@ -41,7 +41,6 @@ def getUnionMinMax(dictlista1,dictlista2):
              interlist.append(dictlista1[i])
     if (len(dictlista2)):
        for i in range(0,len(dictlista2)):
-          print(dictlista2)
           if dictlista2[i] not in interlist:
              interlist.append(dictlista2[i])
     return interlist
@@ -59,7 +58,7 @@ def getGraphLabels(P):
     return graphs
 
 def visualAttacks(d):
-    print ("Attacks -")
+    print("=====Attacks=====")
     for attack in d:
        print ('{',end='')
        for action in attack.actions:
@@ -67,27 +66,28 @@ def visualAttacks(d):
        print ('}',end=',')
     print()
 
-def genminmaxtree2(d,P):
+def genminmaxtree(d,P):
     print('Min-Max-Tree')
     #print ('d')
     visualAttacks(d)
     pprint(d)
-    print('Attacks length:',len(d))
-    print ('P')
-    pprint(P)
-    print('Predicates length:',len(P))
-   
+    print('Number of Attacks:',len(d))
+
+    S,Sprimes=sPrimesCalc(d)
+    print('Sprimes');
+    pprint(Sprimes)
+    ud,udprime=udCalc(S,Sprimes)
+    print('ud');
+    pprint(ud)
+    print('udprime');
+    pprint(udprime)
+
     if(len(d)==1 and len(d[0].actions)==1):
           print (d[0].actions)
           action=d[0].actions[0]
           treetop=treeTopTextGen(action.e, action.eprime,action.label)
           return Tree(treetop)
-    
-    S,Sprimes=sPrimesCalc(d)
-    ud,udprime=udCalc(S,Sprimes)
-    #graphs=getGraphLabels(d)
-    #print (graphs)
-    #print('Graphs length:',len(graphs))
+
     decomposedGraph=Decomposition2(d)
     print ('After Decomposition',decomposedGraph)
     decomposedCondition=True
@@ -108,94 +108,23 @@ def genminmaxtree2(d,P):
           dExtend=[]
           for item in decomposedGraph:
              dExtend.extend(item)
-             tree.append(genminmaxtree2(item,P))
-          print ('D Extend', dExtend)
-          (s,sprime)=sPrimesCalc(dExtend)
-          (ud,udprime)=udCalc(s,sprime)
-          treetop=treeTopTextGen(ud[0],ud[1],'Eps')
-          return Tree(treetop,tree,'SAND')     
-    if d==decomposedGraph or decomposedCondition==False:
-       print ('Didnot Decompose--',decomposedGraph)
-       print ('Covering')
-       dnew=covering(d)
-       print (dnew)
-       tree=[]
-       for di in dnew:
-          tree.append(genminmaxtree2(di,P))
-       treetop=treeTopTextGen(udprime[0],udprime[1],'Eps')
-       return Tree(treetop,tree,'OR')   
-
-    
-    
-
-def genminmaxtree(d,P):
-    print('Min-Max-Tree')
-    print ('d')
-    pprint(d)
-    print('Attacks length:',len(d))
-    print ('P')
-    pprint(P)
-    print('Predicates length:',len(P))
-   
-    if(len(d)==1 and len(d[0].actions)==1):
-          print (d[0].actions)
-          action=d[0].actions[0]
-          treetop=treeTopTextGen(action.e, action.eprime,action.label)
-          return Tree(treetop)
-    
-    S,Sprimes=sPrimesCalc(d)
-    ud,udprime=udCalc(S,Sprimes)
-    graphs=getGraphLabels(d)
-    print (graphs)
-    print('Graphs length:',len(graphs))
-    decomposedGraph=Decomposition(graphs)
-    print ('After Decomposition',decomposedGraph)
-    decomposedCondition=True
-    if graphs!=decomposedGraph:
-       print ('Graphs Decomposed')
-       decomposedAttacks=[]
-       for item in decomposedGraph:
-          actions=[]
-          if (isinstance(item,list)!=True):
-             print ('Not a List')
-             actions.append(getActionsFromLabels(item,d))
-          else:
-             print ('Its a List')
-             for actionName in item:
-                actions.append(getActionsFromLabels(actionName,d))
-          decomposedAttacks.append([Attack(actions)])
-       tree=[]
-       print ('Decomposed Attack',decomposedAttacks)
-       for decomposedAttack in decomposedAttacks:
-          print ("Length of attack:",len(decomposedAttack))
-          (decomposedSi,decomposedSiprimes)=sPrimesCalc(decomposedAttack)
-          print ('Decomposed Sprimes',decomposedSiprimes)
-          (decomposedUdi,decomposedUdiprime)=udCalc(decomposedSi,decomposedSiprimes)
-          print ('Length of Decomposed udiprime',len(decomposedUdiprime))
-          print ('Decomposed udprimes',decomposedUdi[1],decomposedUdiprime[1])
-          if set(decomposedUdi[0])!=set(decomposedUdiprime[0]) and set(decomposedUdi[1]) != set(decomposedUdiprime[1]):
-              decomposedCondition=False
-       if(decomposedCondition==True):
-          dExtend=[]
-          for item in decomposedAttacks:
-             dExtend.extend(item)
              tree.append(genminmaxtree(item,P))
           print ('D Extend', dExtend)
           (s,sprime)=sPrimesCalc(dExtend)
           (ud,udprime)=udCalc(s,sprime)
-          treetop=treeTopTextGen(ud[0],ud[1],'Eps')
-          return Tree(treetop,tree,'SAND')     
-    if graphs==decomposedGraph or decomposedCondition==False:
-       print ('Didnot Decompose--',decomposedGraph)
+          treetop=treeTopTextGen(ud[0],ud[1],'')
+          return Tree(treetop,tree,'SAND')
+    if d==decomposedGraph or decomposedCondition==False:
+       print ('Graph did not decompose--',decomposedGraph)
        print ('Covering')
        dnew=covering(d)
        print (dnew)
        tree=[]
        for di in dnew:
           tree.append(genminmaxtree(di,P))
-       treetop=treeTopTextGen(udprime[0],udprime[1],'Eps')
-       return Tree(treetop,tree,'OR')   
-       
+       treetop=treeTopTextGen(udprime[0],udprime[1],'')
+       return Tree(treetop,tree,'OR')
+
 def treeTopTextGen(e, eprime, label):
     treetop="("
     if (len(e)==0):
@@ -230,8 +159,10 @@ def udCalc(S,Sprimes):
     sintersect=Sprimes[0]
     for sprime in Sprimes:
        sintersect=list(set(sprime) & set(sintersect))
+    print ("sunion")
     for predicate in sunion:
-       print (predicate.key, predicate.params)
+       print (predicate.key, predicate.params,end=',')
+    print ("")
     udprime=[[],sintersect]
     #print ('ud',ud)
     #print ('udd',udprime)
@@ -246,79 +177,76 @@ def sPrimesCalc(d):
           s=list(set(action.e) | set(s))
           sprime = list(set(action.eprime) | set(sprime))
        S.append(s);Sprimes.append(sprime)
-    # for i in range(0,len(P)):
-       # #pprint(P[i])
-       # #print(type(P[i]))
-       # sprime=[];s=[]
-       # #pprint(P[i].items())
-       # #print (P[i]) 
-       # for action in P[i].actions:
-          # print (action.label)
-          # for predicate in action.eprime:
-             # if(predicate not in sprime):
-                # sprime.append(predicate)
-                # print(predicate,'appended')
-       # Sprimes.append(sprime)  
-    #print ("S':",Sprimes)      
-    #print ("Length of S':",len(Sprimes))
     return (S, Sprimes)
 
 def covering(d):
-    if(len(d)==1 and len(d[0].actions)==1):
-       return Tree(Node(P[0].actions)) ##write later
-    S,Sprimes=sPrimesCalc(d)
-    #print (Sprimes)
-    # S=[];Sprimes=[]
-    # for attack in P:
-       # s=[];sprime=[]
-       # for action in attack.actions:
-          # for predicate in action.eprime:
-             # if(predicate not in sprime):
-                # sprime.append(predicate)
-       # Sprimes.append(sprime)
-    for sprime in Sprimes:
-          print (sprime)
-    SX=[]
-    # maximum=0;
-    # for sx in Sd:
-       # for sy in Sd:
-          # sxsy=list(set(sx) & set(sy))
-          # sxunionsy=list(set(sx) | set(sy))
-          # if(sx!=sy and sxsy is not None):
-             # if (len(sxsy)>maximum):
-                # maximum=len(sxsy)
-                # Sd.remove(sx);Sd.remove(sy)
-                # Sd.append(sxunionsy)
-    # print('After Alg--')
-    # for sd in Sd:
-          # print('Element')
-          # for element in sd:
-             # print (element.key, element.params)         
-    combination=powerset(len(Sprimes)) 
-    print('Combination',combination)
-    for c in combination:
-       sx=Sprimes[c[0]]
-       for cx in c:
-          sx=list(set(Sprimes[cx]) & set(sx))
-       SX.append(sx)
-    for c in SX:
-       print ('---')
-       for predicate in c:
-          print (predicate.key, predicate.params)
-    index=SX.index(max(SX,key=len))
-    print(combination[index])
-    dnew=[[],[]]
-    for i in range(0,len(d)):
-       print (i)
-       if (i not in combination[index]):
-          dnew[0].append(d[i])
-       else:
-          dnew[1].append(d[i])
-    return dnew
-       
-       
-             
-          
+    if(len(d)<=1):
+        print ("Something Went Wrong. Covering can only be applicable for more than one attack")
+        sys.exit()
+    S=[]
+    for attack in d:
+        s=[];sprime=[]
+        for action in attack.actions:
+            s=list(set(s)|set(action.e))
+            sprime=list(set(sprime)|set(action.eprime))
+        S.append([s,sprime])
+    X=[]
+    Y=[]
+    SXSY=[]
+    SXSYlengths=[]
+    finalX=[]
+    for x in range(len(S)):
+        finalX.append(x)
+        for y in range(len(S)):
+            if(x!=y):
+                sxsy=[]
+                sxsy.append(list(set(S[x][0]) & set(S[y][0])))
+                sxsy.append(list(set(S[x][1]) & set(S[y][1])))
+                X.append(x)
+                Y.append(y)
+                SXSY.append(sxsy)
+                SXSYlengths.append((len(sxsy[0])+len(sxsy[1])))
+    print(X)
+    print(Y)
+    print(SXSY)
+    print(SXSYlengths)
+
+    XY=[]
+    for i in range(len(X)):
+        if([X[i],Y[i]] not in XY and [Y[i],X[i]] not in XY):
+            XY.append([X[i],Y[i]])
+            if (X[i]!=Y[i] and SXSYlengths[i]>0 and len(S)>2):
+                if (SXSYlengths[i]==max(SXSYlengths) and (S[X[i]]!=S[Y[i]])):
+                    print (X[i], Y[i],SXSYlengths[i])
+                    print (S)
+                    sxi=S[X[i]]
+                    syi=S[Y[i]]
+                    S.remove(sxi)
+                    S.remove(syi)
+                    XuY=[X[i],Y[i]]
+                    finalX.remove(X[i])
+                    finalX.remove(Y[i])
+                    finalX.append(XuY)
+
+
+                #if(len(sxsy[0])>0 or len(sxsy[1])>0):
+    print (finalX)
+    dCovering=[]
+    for x in finalX:
+        if (isinstance(x, list)!=True):
+            dCovering.append([d[x]])
+        else:
+            d2=[]
+            for k in x:
+                d2.append(d[k])
+            dCovering.append(d2)
+    print (dCovering)
+    return dCovering
+
+
+
+
+
 
 def powerset(P):
     comb=[]
@@ -332,10 +260,10 @@ def powerset(P):
     for item in x:
        if(len(item)>=1 and len(item)<P):
           comb.append(item)
-    return comb  
-       
+    return comb
 
-       
+
+
 def genbintree(graphs, P):
     #function to generate the binary tree
     display(graphs,'graph input to genbintree') #display the graph which is given as input to genbintree function
@@ -373,7 +301,7 @@ def genbintree(graphs, P):
         print ('Graph decomposed as')
         display(Gl,'Gl') #display the decomposed graphs gl
         display(Gr,'Gr') #display the decomposed graphs gr
-        
+
         #make a cartesian product
         GlGr=cartesian_product(Gl,Gr)
         print (GlGr)
@@ -393,9 +321,9 @@ def genbintree(graphs, P):
             else:
                 return False
         else:
-            #if the cartesian product is not equal to that of the input graph then 
-            t1=genbintree(GlGr,P) #perform genbintree to the cartesian product and 
-            graphs.remove(GlGr) #remove GlGr from graphs and 
+            #if the cartesian product is not equal to that of the input graph then
+            t1=genbintree(GlGr,P) #perform genbintree to the cartesian product and
+            graphs.remove(GlGr) #remove GlGr from graphs and
             t2=genbintree(graphs,P)#
             Eps,XlabelString=Refinement_Spec(P,['OR',t1.top.getLabel(),t2.top.getLabel()])
             P.append(Eps)
@@ -428,7 +356,7 @@ def genopttree(t):
     for tree in tk:
         print (tree.top.getLabel(),end=',')
     print ()
-    
+
     opt=True #set the optimised flag as True. If the flag is true, tree is optimised
     seq=[] #create a list to save the sequence
     for tree in tk:
@@ -438,14 +366,14 @@ def genopttree(t):
             #if the tree has single node, then there is no need to optimise and hence appended to the sequence
             seq.append(tree)
         elif (tree.top.getLabel()==t.top.getLabel() and tree.relation==t.relation):
-            #if the top of the parent tree and its child tree are same and has same relation, they can be optimised and hence appended to the sequence 
+            #if the top of the parent tree and its child tree are same and has same relation, they can be optimised and hence appended to the sequence
             for child in tree.child:
                 #optimised-hence append all children to the seq which satisfies the condition
                 seq.append(child)
         else:
             #else the optimisation is not performed and hence change the flag as false
             opt=False
-    
+
     #print the seq which is the children to the output tree
     print ('seq',end='=')
     for tree in seq:
@@ -453,13 +381,12 @@ def genopttree(t):
     print ('relation=',relation) #along with the relation
     print ('opt=',opt) # and optimisation flag
     print ()
-    
+
     print ('Tree top-',t.top.getLabel())
-    
+
     if (opt):
         #if the input tree is optimised then return the tree with seq as child
         return Tree(t.top,seq,relation,t.XlabelString)
     else:
         #if the tree is not optimised, then return the tree with tk as child
         return Tree(t.top,tk,relation,t.XlabelString)
-
