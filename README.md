@@ -15,6 +15,6 @@
 > pip install numpy
 > pip install graphviz
 
-- Go to "Test" directory and run "attackTrees.bat" file.
-- Select the specification file needed. Two specification files were provided to test the application, you can select one from them. 
+- Open "Terminal" or "Command Prompt" with administrative access, navigate to the "Test" directory and use the command "python FileParser.py" to run the application.
+- Select the specification file needed from the "Test" directory. Two specification files were provided to test the application, you can select one from them. 
 - Once you select the mcrl2 file, wait for the software to generate traces and visualize trees.

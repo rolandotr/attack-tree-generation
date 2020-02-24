@@ -24,7 +24,7 @@ from tkinter.ttk import Progressbar
 
 #####Trace Generation#######
 
-os.chdir("C:/Users/dnagumot/xampp/htdocs/attack_trees/attack-tree-generation/Test")
+#os.chdir("C:/Users/dnagumot/xampp/htdocs/attack_trees/attack-tree-generation/Test")
 log_file = open("logfile.txt","w")
 
 
