@@ -12,7 +12,9 @@
 > "python --version" command.
 - Open command prompt and install necessary python libraries mentioned below using commands
 > pip install antlr4-python3-runtime
+
 > pip install numpy
+
 > pip install graphviz
 
 - Open "Terminal" or "Command Prompt" with administrative access, navigate to the "Test" directory and use the command "python FileParser.py" to run the application.
