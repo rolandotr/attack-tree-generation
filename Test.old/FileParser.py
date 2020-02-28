@@ -14,7 +14,7 @@ import os
 import subprocess as sub
 import shutil
 
-os.chdir("C:/Users/dnagumot/xampp/htdocs/attack_trees/Test")
+#os.chdir("C:/Users/dnagumot/xampp/htdocs/attack_trees/Test")
 
 
 def GenerateTrace(filename):
